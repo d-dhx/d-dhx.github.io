@@ -657,6 +657,11 @@ footer.sticky-bottom {
   .card {
     background-color: var(--global-card-bg-color);
     border: 1px solid var(--global-divider-color);
+    // the global .card rule centers its children, which shrink-wraps each
+    // semester's content to its own longest line. That makes the tag column
+    // a different width in every card, so course titles start at a different
+    // indent per semester. Stretch instead, so every semester lines up.
+    align-items: stretch;
 
     .list-group-item {
       background-color: inherit;
