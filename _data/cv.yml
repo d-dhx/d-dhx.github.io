@@ -8,6 +8,46 @@
 #     - name: Languages
 #       value: English, German
 
+- title: Fall 2026
+  type: time_table
+  contents:
+    - tag: CS
+      description:
+        - 15-645 Database Systems
+        - 15-689 Independent Study
+        - 05-891 Designing Human Centered Software
+        - 11-868 Large Language Model Systems
+
+- title: Spring 2026
+  type: time_table
+  contents:
+    - tag: CS
+      description: 10-301 Introduction to Machine Learning
+    - tag: Archi
+      description: 48-241 Modern History of Architecture & Theory
+    - tag: BXA
+      description: 52-402 BXA Seminar V:Capstone Project
+    - tag: GenEd
+      description:
+        - "99-358 IDeATe: Introduction to Unity3D"
+        - "99-384 Technology, Humanity and Social Justice: Health"
+    - tag: PE
+      description: 69-136 Basketball Skills
+
+- title: Fall 2025
+  type: time_table
+  contents:
+    - tag: CS
+      description:
+        - 15-440 Distributed Systems
+        - 05-362 Transformational Game Design Studio
+    - tag: Cog Sci
+      description:
+        - 85-310 Research Methods in Cognitive Psychology
+        - 33-120 Science and Science Fiction
+    - tag: BXA
+      description: 52-401 Seminar IV:Capstone Project Research
+
 - title: Spring 2025
   type: time_table
   contents:
@@ -32,9 +72,9 @@
   contents:
     - tag: CS
       description:
-        - '<a href="https://www.cs.cmu.edu/afs/cs/academic/class/15210-f24/www-f24/" target="_blank">15-210 Parallel and Sequential Data Structures and Algorithm</a>'
+        - '<a href="https://www.cs.cmu.edu/afs/cs/academic/class/15210-f24/www-f24/" target="_blank">15-210 Parallel and Sequential Data Structures and Algorithms</a>'
         - 16-385 Computer Vision
-        - 05-413 Human Factor
+        - 05-413 Human Factors
     - tag: Cog Sci
       description: 85-219 Foundations of Brain and Behavior
     - tag: GenEd
@@ -113,6 +153,13 @@
       description:
         - 76-100 Reading and Writing in an Academic Context
         - 79-295 Legacies of Fascism and Anti-Fascism
+
+- title: Summer 2022
+  type: time_table
+  contents:
+    - tag: GenEd
+      description: 99-101 Computing @ Carnegie Mellon
+
 # - title: Experience
 #   type: time_table
 #   contents:
