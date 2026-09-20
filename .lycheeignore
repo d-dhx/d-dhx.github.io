@@ -1,0 +1,23 @@
+# Sites that reject automated requests (403/429) but work fine in a browser.
+# Verified by hand: each of these loads normally when visited.
+^https://www\.amnh\.org
+^https://www\.britishmuseum\.org
+^https://www\.metmuseum\.org
+^https://www\.nga\.gov
+^https://hirshhorn\.si\.edu
+^https://carnegiemnh\.org
+^https://ago\.ca
+^https://www\.iwm\.org\.uk
+
+# Wikimedia's thumbnail renderer rejects non-browser user agents.
+# The underlying Commons files are checked by hand instead.
+^https://upload\.wikimedia\.org
+
+# Documentation examples, not real destinations.
+^http://localhost
+
+# Leaflet/Mapbox tile templates: the {z}/{x}/{y} placeholders are substituted
+# at runtime, so the literal URL is never requested.
+\{[zxys]\}
+^https://api\.mapbox\.c
+^https://events\.mapbox\.c

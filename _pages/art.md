@@ -178,7 +178,7 @@ const data = {
     {
       id: "Churchill War Rooms",
       url: "https://www.iwm.org.uk/visits/churchill-war-rooms",
-      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/IWM_logo.svg/320px-IWM_logo.svg.png",
+      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Imperial_War_Museums_logo.svg/320px-Imperial_War_Museums_logo.svg.png",
       desc: "Churchill War Rooms, London",
       region: "UK"
     },
@@ -194,7 +194,7 @@ const data = {
     {
       id: "M+ Museum",
       url: "https://www.mplus.org.hk/en/",
-      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d0/M%2B_logo.svg/320px-M%2B_logo.svg.png",
+      img: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1e/WKCD_M%2B%2C_2021.11.jpg/320px-WKCD_M%2B%2C_2021.11.jpg",
       desc: "Contemporary visual culture museum, Hong Kong",
       region: "Asia"
     },
@@ -216,7 +216,7 @@ const data = {
     //mainland China
     {
     id: "West Bund Museum",
-    url: "https://www.westbund.com/en/museum/",
+    url: "https://www.westbund.com/en/",
     img: "{{ site.baseurl }}/assets/img/museums/west_bund.jpg",
     desc: "West Bund Museum, Shanghai",
     region: "Asia"
