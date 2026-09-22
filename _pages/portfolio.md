@@ -29,10 +29,16 @@ horizontal: false
     </div>
   </div>
   {% else %}
-  <div class="row row-cols-1 row-cols-md-3">
-    {% for project in sorted_projects %}
-      {% include projects.liquid %}
-    {% endfor %}
+  <!-- A category scrolls sideways rather than wrapping, so adding a project
+       never leaves a lone card stranded on a second row. -->
+  <div class="scroller-wrap">
+    <button class="scroller-btn scroller-prev" type="button" aria-label="Scroll {{ category }} projects left" hidden>&#8249;</button>
+    <div class="scroller" tabindex="0" role="region" aria-label="{{ category }} projects">
+      {% for project in sorted_projects %}
+        {% include projects.liquid %}
+      {% endfor %}
+    </div>
+    <button class="scroller-btn scroller-next" type="button" aria-label="Scroll {{ category }} projects right" hidden>&#8250;</button>
   </div>
   {% endif %}
   {% endfor %}
@@ -64,3 +70,5 @@ horizontal: false
   {% endif %}
 {% endif %}
 </div>
+
+<script src="{{ '/assets/js/project-scroller.js' | relative_url }}"></script>
