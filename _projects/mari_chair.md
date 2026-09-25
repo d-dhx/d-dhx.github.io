@@ -22,13 +22,18 @@ category: 3D
   </p>
 
   <!-- Drawings -->
-  <div class="row justify-content-center">
-    <div class="col-md-11 mb-3">
+  <div class="row">
+    <div class="col-md-6 mb-3">
       {% include figure.liquid path="assets/img/projects/mari_chair/axonometric.jpg" title="2.2.1 Axonometric drawing" class="img-fluid rounded shadow-sm" %}
+    </div>
+    <div class="col-md-6 mb-3">
+      {% include figure.liquid path="assets/img/projects/mari_chair/axonometric_exploded.jpg" title="2.2.2 Axonometric drawing [exploded]" class="img-fluid rounded shadow-sm" %}
     </div>
   </div>
 
-  <p class="text-muted text-center mb-5">2.2.1 &mdash; Axonometric drawing.</p>
+  <p class="text-muted text-center mb-5">
+    2.2 &mdash; The chair drawn assembled, then exploded into its separate members.
+  </p>
 
   <div class="row justify-content-center">
     <div class="col-md-11 mb-3">
