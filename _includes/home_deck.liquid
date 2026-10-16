@@ -1,0 +1,42 @@
+{% comment %}
+  Front-page deck of photographs, animated by assets/js/home-deck.js.
+
+  Every image placed in assets/img/home_cards/ becomes a card, ordered by
+  filename, so the deck is changed by adding or removing files there. Until
+  that folder holds any images, numbered placeholder photos stand in.
+{% endcomment %}
+{% assign deck_files = site.static_files | where_exp: 'f', "f.path contains '/assets/img/home_cards/'" | sort: 'path' %}
+<section class="home-deck" aria-label="Photography">
+  <ol class="home-deck-source" hidden>
+    {% assign deck_count = 0 %}
+    {% for f in deck_files %}
+      {% assign ext = f.extname | downcase %}
+      {% if ext == '.jpg' or ext == '.jpeg' or ext == '.png' or ext == '.webp' %}
+        {% assign deck_count = deck_count | plus: 1 %}
+        {% assign deck_src = f.path | relative_url %}
+        <li data-thumb="{{ deck_src }}" data-full="{{ deck_src }}"></li>
+      {% endif %}
+    {% endfor %}
+    {% if deck_count == 0 %}
+      {% for i in (1..32) %}
+        <li data-thumb="https://picsum.photos/seed/diane-{{ i }}/320/320" data-full="https://picsum.photos/seed/diane-{{ i }}/800/800"></li>
+      {% endfor %}
+    {% endif %}
+  </ol>
+
+  <div class="home-deck-board"></div>
+
+  <figure class="home-deck-stage" aria-hidden="true">
+    <img alt="">
+    <img alt="">
+  </figure>
+
+  <p class="home-deck-hint"></p>
+
+  <a class="home-deck-scroll" href="#home-intro" aria-label="Scroll to introduction">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">
+      <path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </a>
+</section>
+<div class="home-deck-spacer" aria-hidden="true"></div>

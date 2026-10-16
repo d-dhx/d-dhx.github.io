@@ -22,6 +22,18 @@ body.fixed-top-nav {
   padding-top: 56px;
 }
 
+// A page can drop the navigation bar with `hide_navbar: true` in its front
+// matter. The bar is hidden rather than left out of the page, because the
+// theme toggle, search and progress-bar scripts look for elements inside it.
+body.hide-navbar {
+  // !important because al-folio's script also sets this padding inline after load
+  padding-top: 0 !important;
+
+  #navbar {
+    display: none;
+  }
+}
+
 body.sticky-bottom-footer {
   // Remove padding below footer.
   padding-bottom: 0;

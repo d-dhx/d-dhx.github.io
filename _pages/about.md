@@ -3,6 +3,7 @@ layout: about
 title: About
 permalink: /
 subtitle: CMU'27
+hide_navbar: true # the photo deck fills the first screen instead
 
 profile:
   align: right

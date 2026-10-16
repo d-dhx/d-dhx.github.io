@@ -1,0 +1,184 @@
+// Front-page photo deck (see _includes/home_deck.liquid, assets/js/home-deck.js).
+//
+// The deck covers the first screen of the page, edge to edge, from the very
+// top. It is positioned against the page itself rather than measured into
+// place, because al-folio adjusts the body's top padding after load and any
+// offset taken earlier would go stale. Nothing between the deck and the page
+// root is positioned, so top/left/right resolve against the whole page.
+//
+// It stays hidden until the script takes over; with scripts off the page
+// simply opens on the introduction.
+.home-deck {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  height: 100svh;
+  overflow: hidden;
+
+  &.is-live {
+    display: block;
+  }
+}
+
+// Holds the deck's place in the page flow so the introduction starts below it.
+// The page's content begins under the fixed navbar (56px) and the container's
+// 3rem top margin, so the spacer is one screen less that.
+.home-deck-spacer {
+  display: none;
+}
+
+.home-deck.is-live + .home-deck-spacer {
+  display: block;
+  height: calc(100vh - 56px - 3rem);
+  height: calc(100svh - 56px - 3rem);
+}
+
+// without the navbar there is no 56px of padding to allow for
+.hide-navbar .home-deck.is-live + .home-deck-spacer {
+  height: calc(100vh - 3rem);
+  height: calc(100svh - 3rem);
+}
+
+.home-deck-board {
+  position: absolute;
+  inset: 0;
+}
+
+// Cards are positioned entirely by transform, from the top-left of the board,
+// so the shuffle, the deal and the final layout are all one property.
+.deck-card {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 3px;
+  // no frame: the photo is the card
+  background: none;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  will-change: transform;
+  transition:
+    opacity 0.3s ease,
+    box-shadow 0.2s ease;
+
+  img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+  }
+
+  &:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--global-theme-color);
+    outline-offset: 2px;
+  }
+
+  // the card on show in the centre leaves a faded gap in its row
+  &.is-lifted {
+    opacity: 0.25;
+  }
+}
+
+.home-deck.is-dealing .deck-card {
+  pointer-events: none;
+}
+
+// Two image layers, so the outgoing photo can fade while the next one flies in.
+.home-deck-stage {
+  position: absolute;
+  margin: 0;
+  pointer-events: none;
+
+  img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    // the fly-in scales from the card's top-left corner
+    transform-origin: 0 0;
+    opacity: 0;
+    filter: drop-shadow(0 10px 24px rgba(0, 0, 0, 0.25));
+  }
+}
+
+.home-deck-hint {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  text-align: center;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  color: var(--global-text-color-light);
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+
+  &.is-hidden {
+    opacity: 0;
+  }
+}
+
+.home-deck-scroll {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  display: block;
+  padding: 4px 10px;
+  line-height: 0;
+  color: var(--global-text-color-light);
+  opacity: 0.7;
+
+  &:hover {
+    color: var(--global-theme-color);
+    opacity: 1;
+  }
+}
+
+// The fixed navbar would otherwise cover the top of the introduction when the
+// scroll cue jumps to it.
+#home-intro {
+  scroll-margin-top: 80px;
+}
+
+.hide-navbar #home-intro {
+  scroll-margin-top: 24px;
+}
+
+// The introduction rises into place as it scrolls into view. The script adds
+// .home-reveal, so without scripts the text is simply there.
+.home-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 0.8s ease,
+    transform 0.8s ease;
+
+  &.is-revealed {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deck-card,
+  .home-deck-hint,
+  .home-reveal {
+    transition: none;
+  }
+
+  .home-reveal {
+    transform: none;
+  }
+}
