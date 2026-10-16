@@ -9,12 +9,32 @@
 // introduction below it.
 (function () {
   const deck = document.querySelector(".home-deck");
-  if (!deck) return;
+  const navbar = document.getElementById("navbar");
+  const tucksNavbar = document.body.classList.contains("hide-navbar");
+
+  // On a page that tucks the navbar away (hide_navbar: true), bring it back
+  // once the reader has scrolled past the deck: by then the introduction is
+  // reaching the top of the screen, and the bar covers no photographs. Without
+  // a working deck there is nothing to make room for, so it comes straight back.
+  function updateNavbar() {
+    if (!tucksNavbar || !navbar) return;
+    const live = deck && deck.classList.contains("is-live");
+    const past = !live || deck.getBoundingClientRect().bottom <= navbar.offsetHeight;
+    document.body.classList.toggle("navbar-revealed", past);
+  }
+
+  if (!deck) {
+    updateNavbar();
+    return;
+  }
 
   const sources = Array.from(deck.querySelectorAll(".home-deck-source li")).map(function (li) {
     return { thumb: li.dataset.thumb, full: li.dataset.full };
   });
-  if (sources.length === 0) return;
+  if (sources.length === 0) {
+    updateNavbar();
+    return;
+  }
 
   // A fresh order on every visit, so each photo gets its turn in the rows,
   // including on a phone, where only some of them fit.
@@ -31,7 +51,6 @@
   const hint = deck.querySelector(".home-deck-hint");
   const scrollCue = deck.querySelector(".home-deck-scroll");
   const intro = document.getElementById("home-intro");
-  const navbar = document.getElementById("navbar");
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -70,7 +89,8 @@
     const vh = deck.clientHeight;
     // the footer comes after this script in the page, so look it up here
     const footer = document.querySelector("footer.fixed-bottom");
-    const navHeight = navbar ? navbar.offsetHeight : 0;
+    // a tucked-away navbar is not over the deck, so the top row can sit high
+    const navHeight = navbar && !tucksNavbar ? navbar.offsetHeight : 0;
     const footerHeight = footer ? footer.offsetHeight : 0;
 
     const wide = vw >= 900;
@@ -463,6 +483,7 @@
       hint.classList.add("is-hidden");
     }
     revealIntro();
+    watchNavbar();
 
     if (reduceMotion) {
       settle();
@@ -470,6 +491,24 @@
       deck.classList.add("is-dealing");
       holdOffscreen();
       whenPhotosReady().then(whenVisible).then(gatherThenDrift).then(settle, settle);
+    }
+
+    function watchNavbar() {
+      if (!tucksNavbar) return;
+      let queued = false;
+      window.addEventListener(
+        "scroll",
+        function () {
+          if (queued) return;
+          queued = true;
+          requestAnimationFrame(function () {
+            queued = false;
+            updateNavbar();
+          });
+        },
+        { passive: true }
+      );
+      updateNavbar();
     }
 
     // A page opened in a background tab would otherwise play its intro unseen,
@@ -490,6 +529,7 @@
     // during an ordinary scroll.
     let resizeTimer = null;
     window.addEventListener("resize", function () {
+      updateNavbar();
       clearTimeout(resizeTimer);
       resizeTimer = setTimeout(function () {
         if (deck.clientWidth === geo.vw && Math.abs(deck.clientHeight - geo.vh) < 120) return;

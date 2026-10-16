@@ -22,15 +22,36 @@ body.fixed-top-nav {
   padding-top: 56px;
 }
 
-// A page can drop the navigation bar with `hide_navbar: true` in its front
-// matter. The bar is hidden rather than left out of the page, because the
-// theme toggle, search and progress-bar scripts look for elements inside it.
+// A page can tuck the navigation bar away with `hide_navbar: true` in its front
+// matter; on the home page, the photo deck's script slides it back in once the
+// reader scrolls past the photographs. The bar is moved rather than left out of
+// the page, because the theme toggle, search and progress-bar scripts look for
+// elements inside it, and it is hidden while away so it cannot be clicked or
+// tabbed to.
 body.hide-navbar {
   // !important because al-folio's script also sets this padding inline after load
   padding-top: 0 !important;
 
   #navbar {
-    display: none;
+    transform: translateY(-100%);
+    visibility: hidden;
+    transition:
+      transform 0.35s ease,
+      visibility 0s linear 0.35s;
+  }
+
+  &.navbar-revealed #navbar {
+    transform: none;
+    visibility: visible;
+    transition:
+      transform 0.35s ease,
+      visibility 0s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.hide-navbar #navbar {
+    transition: none;
   }
 }
 
