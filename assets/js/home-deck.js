@@ -13,9 +13,11 @@
   const tucksNavbar = document.body.classList.contains("hide-navbar");
 
   // On a page that tucks the navbar away (hide_navbar: true), bring it back
-  // once the reader has scrolled past the deck: by then the introduction is
-  // reaching the top of the screen, and the bar covers no photographs. Without
-  // a working deck there is nothing to make room for, so it comes straight back.
+  // once the deck has scrolled out from under it, so the bar never covers a
+  // photograph. The introduction is a full screen that settles flush with the
+  // top (see _home_deck.scss), so the page can always scroll that far.
+  // Without a working deck there is nothing to make room for, so the bar comes
+  // straight back.
   function updateNavbar() {
     if (!tucksNavbar || !navbar) return;
     const live = deck && deck.classList.contains("is-live");
@@ -27,6 +29,13 @@
     updateNavbar();
     return;
   }
+
+  // A reload opens on the photographs again rather than wherever the page was
+  // left, so the browser is told not to restore the scroll position, and any
+  // #home-intro in the address is dropped before it can jump there.
+  if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+  const arrivedAtIntro = location.hash === "#home-intro";
+  if (arrivedAtIntro) history.replaceState(null, "", location.pathname + location.search);
 
   const sources = Array.from(deck.querySelectorAll(".home-deck-source li")).map(function (li) {
     return { thumb: li.dataset.thumb, full: li.dataset.full };
@@ -475,6 +484,19 @@
 
   function start() {
     deck.classList.add("is-live");
+    // the deck and the introduction become a screen each (see _home_deck.scss)
+    document.documentElement.classList.add("home-snap");
+    window.scrollTo(0, 0);
+    if (arrivedAtIntro) {
+      // the browser may still jump to the anchor it was given once the page loads
+      window.addEventListener(
+        "load",
+        function () {
+          window.scrollTo(0, 0);
+        },
+        { once: true }
+      );
+    }
     geo = measure();
     placeChrome();
     build();
@@ -484,6 +506,12 @@
     }
     revealIntro();
     watchNavbar();
+    if (scrollCue && intro) {
+      scrollCue.addEventListener("click", function (event) {
+        event.preventDefault();
+        intro.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+      });
+    }
 
     if (reduceMotion) {
       settle();
