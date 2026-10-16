@@ -348,6 +348,7 @@
     });
     dealt = true;
     deck.classList.remove("is-dealing");
+    deck.classList.add("is-settled");
     // the hint only makes sense once there are cards in rows to hover
     if (hint && !lifted) hint.classList.remove("is-hidden");
   }

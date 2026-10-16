@@ -131,6 +131,12 @@
   }
 }
 
+// The scroll cue waits until the photographs have settled into their rows,
+// so the deck opens on an empty screen, then the photographs, then the cue.
+.home-deck:not(.is-settled) .home-deck-scroll {
+  visibility: hidden;
+}
+
 .home-deck-scroll {
   position: absolute;
   left: 50%;

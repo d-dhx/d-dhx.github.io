@@ -40,6 +40,13 @@
   </a>
 </section>
 <div class="home-deck-spacer" aria-hidden="true"></div>
+<script>
+  // Claim the first screen now, before the rest of the page is parsed. The
+  // deck's own script only runs once the whole page is in, and until then the
+  // introduction would be drawn at the top, so a reload flashed it before the
+  // photographs. This way the first thing drawn is the empty deck.
+  document.querySelector('.home-deck').classList.add('is-live');
+</script>
 <noscript>
   <style>
     body.hide-navbar #navbar {
