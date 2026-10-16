@@ -64,7 +64,17 @@
      * This is the distance the user can scroll
      */
     function getDistanceToScroll() {
-      return $(document).height() - $(window).height();
+      const full = $(document).height() - $(window).height();
+      // On the front page scrolling snaps between the photo deck and the
+      // introduction (see _home_deck.scss), so it comes to rest at the
+      // introduction rather than the very bottom of the page. Measure to there,
+      // or the bar would stop short of full.
+      const intro = document.querySelector('html.home-snap #home-intro');
+      if (!intro) return full;
+      const box = intro.getBoundingClientRect();
+      const top = box.top + window.scrollY;
+      const bottom = box.bottom + window.scrollY;
+      return Math.min(full, Math.max(top, bottom - $(window).height()));
     }
 
     function resizeProgressBar() {
