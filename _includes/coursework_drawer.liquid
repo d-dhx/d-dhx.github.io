@@ -1,0 +1,80 @@
+{% comment %}
+  Coursework as a drawer of folders, one per semester, from _data/cv.yml.
+  A course list in cv.yml is either one string or a list of them; a single
+  string is split into a list of one so both are counted and listed alike.
+  assets/js/coursework-drawer.js opens one folder at a time, in place, when its
+  tab is clicked; without the script every folder is simply shown open.
+{% endcomment %}
+{% assign semesters = site.data.cv %}
+{% assign total_courses = 0 %}
+<section class="cw-drawer" aria-label="Coursework by semester">
+  <div class="cw-folders">
+    {% for entry in semesters %}
+      {% assign number = forloop.length | minus: forloop.index0 %}
+      {% assign slot = forloop.index0 | modulo: 3 %}
+      {% assign course_count = 0 %}
+      {% for content in entry.contents %}
+        {% assign items = content.description %}
+        {% assign shape = items | jsonify | slice: 0 %}
+        {% unless shape == '[' %}{% assign items = items | split: '@@' %}{% endunless %}
+        {% assign course_count = course_count | plus: items.size %}
+      {% endfor %}
+      {% assign total_courses = total_courses | plus: course_count %}
+      {% assign folder_id = entry.title | slugify %}
+
+      <div class="cw-folder" id="{{ folder_id }}" data-slot="{{ slot }}">
+        <button class="cw-tab" type="button" aria-expanded="false" aria-controls="{{ folder_id }}-panel">
+          <span class="cw-tab-num">
+            {%- if number < 10 %}0{% endif -%}
+            {{- number -}}
+          </span>
+          <span class="cw-tab-label">{{ entry.title | downcase }}</span>
+        </button>
+        <div class="cw-body">
+          <div class="cw-panel" id="{{ folder_id }}-panel">
+            <div class="cw-card">
+              <div class="cw-card-inner">
+                <header class="cw-card-head">
+                  <span class="cw-card-kicker"
+                    >semester {% if number < 10 %}0{% endif -%}
+                    {{- number -}}
+                  </span>
+                  <h2 class="cw-card-title">{{ entry.title }}</h2>
+                  <span class="cw-card-count">
+                    {{- course_count }}
+                    {% if course_count == 1 %}course{% else %}courses{% endif -%}
+                  </span>
+                </header>
+                <dl class="cw-courses">
+                  {% for content in entry.contents %}
+                    {% assign items = content.description %}
+                    {% assign shape = items | jsonify | slice: 0 %}
+                    {% unless shape == '[' %}{% assign items = items | split: '@@' %}{% endunless %}
+                    <div class="cw-row">
+                      <dt class="cw-tag">{{ content.tag }}</dt>
+                      <dd class="cw-list">
+                        <ul>
+                          {% for item in items %}
+                            <li>{{ item }}</li>
+                          {% endfor %}
+                        </ul>
+                      </dd>
+                    </div>
+                  {% endfor %}
+                </dl>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <div class="cw-front">
+    <span class="cw-front-name"><i class="fa-regular fa-folder-open"></i> coursework</span>
+    <span class="cw-front-meta">{{ semesters.size }} semesters · {{ total_courses }} courses</span>
+    <span class="cw-front-hint">click a tab to open it</span>
+  </div>
+</section>
+
+<script src="{{ '/assets/js/coursework-drawer.js' | relative_url }}"></script>
