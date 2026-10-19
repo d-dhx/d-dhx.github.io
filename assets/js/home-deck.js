@@ -447,11 +447,11 @@
 
   // --- the introduction below ---------------------------------------------
 
+  // The introduction's heading and text, and each column of the education and
+  // teaching screen after it.
   function revealIntro() {
-    if (!intro) return;
-    const parts = Array.from(intro.children).filter(function (el) {
-      return el.tagName === "HEADER" || el.tagName === "ARTICLE";
-    });
+    const parts = Array.from(document.querySelectorAll("#home-intro > header, #home-intro > article, #home-background .home-bg-col"));
+    if (parts.length === 0) return;
     if (reduceMotion || !("IntersectionObserver" in window)) return;
 
     parts.forEach(function (el) {

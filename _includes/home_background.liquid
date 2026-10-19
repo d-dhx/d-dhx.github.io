@@ -1,0 +1,48 @@
+{% comment %}
+  Education and teaching, the home page's screen after the introduction.
+  The entries live in _data/background.yml; styled in _home_background.scss.
+{% endcomment %}
+{% assign background = site.data.background %}
+{% if background %}
+  <section class="home-screen" id="home-background" aria-label="Education and teaching">
+    <div class="home-bg">
+      {% for group in background %}
+        {% assign group_name = group[0] %}
+        <div class="home-bg-col">
+          <h2 class="home-bg-heading">{{ group_name }}</h2>
+          <ol class="home-bg-list">
+            {% for item in group[1] %}
+              <li class="home-bg-item">
+                <p class="home-bg-when">{{ item.dates }}</p>
+                {% if item.role %}
+                  <p class="home-bg-role">{{ item.role }}</p>
+                {% endif %}
+                {% comment %} degrees taken together share one entry, a title each {% endcomment %}
+                {% if item.titles %}
+                  {% assign titles = item.titles %}
+                {% else %}
+                  {% assign titles = '' | split: '' | push: item %}
+                {% endif %}
+                {% for t in titles %}
+                  <h3 class="home-bg-title">
+                    {% if t.url %}
+                      <a href="{{ t.url }}" target="_blank" rel="noopener">{{ t.title }}</a>
+                    {% else %}
+                      {{ t.title }}
+                    {% endif %}
+                  </h3>
+                {% endfor %}
+                {% if item.place %}
+                  <p class="home-bg-place">{{ item.place }}</p>
+                {% endif %}
+                {% if item.note %}
+                  <p class="home-bg-note">{{ item.note }}</p>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ol>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}

@@ -1,0 +1,102 @@
+// Education and teaching on the home page (see _includes/home_background.liquid).
+//
+// Two columns side by side, one under the other on a narrow screen. Each entry
+// hangs off a thin rule with a small mark at its date, like a timeline read
+// from the newest down. As a screen of its own it is sized and centred with
+// the introduction (see .home-screen in _home_deck.scss); without the snap it
+// simply follows the introduction.
+
+#home-background {
+  margin-top: 4rem;
+}
+
+html.home-snap #home-background {
+  margin-top: 0;
+}
+
+.home-bg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem 4rem;
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.home-bg-heading {
+  margin: 0 0 1.5rem;
+  font-size: 1.5rem;
+  font-weight: 300;
+  text-transform: lowercase;
+}
+
+.home-bg-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-left: 1px solid var(--global-divider-color);
+}
+
+.home-bg-item {
+  position: relative;
+  padding: 0 0 1.75rem 1.5rem;
+
+  &:last-child {
+    padding-bottom: 0.25rem;
+  }
+
+  // the mark on the rule, level with the date
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0.45rem;
+    left: -4px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--global-bg-color);
+    border: 1px solid var(--global-text-color-light);
+  }
+}
+
+.home-bg-when {
+  margin: 0;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--global-text-color-light);
+}
+
+.home-bg-role {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--global-text-color-light);
+}
+
+.home-bg-title {
+  margin: 0.3rem 0 0.2rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
+
+  a {
+    color: inherit;
+
+    &:hover {
+      color: var(--global-theme-color);
+    }
+  }
+}
+
+.home-bg-place,
+.home-bg-note {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.home-bg-note {
+  color: var(--global-text-color-light);
+}

@@ -2,7 +2,7 @@
 layout: default
 ---
 {% include home_deck.liquid %}
-<div class="post" id="home-intro">
+<div class="post home-screen" id="home-intro">
   <header class="post-header">
     <h1 class="post-title">
       {% if site.title == 'blank' %}
@@ -94,3 +94,4 @@ layout: default
   <script src="{{ '/assets/js/loader.js' | relative_url }}"></script>
   <script src="{{ '/assets/js/home-deck.js' | relative_url }}"></script>
 </div>
+{% include home_background.liquid %}

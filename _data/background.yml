@@ -1,0 +1,33 @@
+# Education and teaching, shown on the home page as the screen after the
+# introduction (see _includes/home_background.liquid). Newest first, by when
+# each one ended.
+# An entry has one `title` or, for degrees taken together, a list of `titles`.
+# `url` (on the entry, or on each of its titles), `role`, `place` and `note`
+# are all optional.
+
+education:
+  - title: M.S. in Computer Science
+    url: https://www.csd.cmu.edu/academics/masters/overview
+    place: Carnegie Mellon University
+    dates: 2026 – 2027
+  - titles:
+      - title: B.S. in Computer Science and Arts
+        url: https://www.cmu.edu/interdisciplinary/programs/bcsa.html
+      - title: B.S. in Cognitive Science
+        url: https://www.cmu.edu/dietrich/psychology/undergraduate/prospective-students/academics/cognitive-science/index.html
+    place: Carnegie Mellon University
+    dates: 2022 – 2026
+
+teaching:
+  - title: 15-122 Principles of Imperative Computation
+    role: Teaching Assistant
+    dates: Summer 2024 – Spring 2026
+  - title: 15-213 Introduction to Computer Systems
+    role: Teaching Assistant
+    dates: Summer 2025
+  - title: 62-125 Drawing I
+    role: Teaching Assistant
+    dates: Fall 2024
+  - title: 62-126 Drawing II
+    role: Teaching Assistant
+    dates: Spring 2024

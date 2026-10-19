@@ -23,7 +23,7 @@ social: true # includes social icons at the bottom of the page
 Hi! Welcome to my personal website.
 I'm Diane.
 
-I'm a master's student in [Computer Science](https://www.csd.cmu.edu/academics/masters/overview) at Carnegie Mellon University's School of Computer Science, where I'm deepening the technical side of a background that has always straddled the technical and the human-centered.
+I'm a master's student in [Computer Science](https://www.csd.cmu.edu/academics/masters/overview) at Carnegie Mellon University's Kenneth C. Griffin School of Computer Science, where I'm deepening the technical side of a background that has always straddled the technical and the human-centered.
 
 I completed my undergraduate degrees at CMU in [BCSA](https://www.cmu.edu/interdisciplinary/programs/bcsa.html)—an interdisciplinary program blending Computer Science and Architecture—and in [Cognitive Science](https://www.cmu.edu/dietrich/psychology/undergraduate/prospective-students/academics/cognitive-science/index.html) through the Department of Psychology. BCSA gave me a foundation at the intersection of design, computation, and spatial thinking, while Cognitive Science let me dive into how people think, learn, and interact with technology, bridging insights from psychology, neuroscience, and artificial intelligence.
 

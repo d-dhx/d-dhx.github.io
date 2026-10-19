@@ -159,26 +159,26 @@
   scroll-margin-top: 80px;
 }
 
-// The deck and the introduction are a screen each: scrolling settles on one
-// or the other, never part way between. The script switches this on once the
-// deck is running.
+// The deck, the introduction and the education and teaching after it are a
+// screen each: scrolling settles on one or another, never part way between.
+// The script switches this on once the deck is running.
 html.home-snap {
   scroll-snap-type: y mandatory;
 
-  // The introduction is a screen of its own. It settles with its top edge at
-  // the top of the screen, so no part of the deck is left showing behind the
-  // navbar. Being at least a screen tall also guarantees the page can scroll
-  // that far, however short the introduction is.
-  #home-intro {
+  // Each section after the deck is a screen of its own. It settles with its
+  // top edge at the top of the screen, so nothing of the screen before is left
+  // showing behind the navbar. Being at least a screen tall also guarantees
+  // the page can scroll that far, however short the section is.
+  .home-screen {
     scroll-snap-align: start;
     scroll-margin-top: 0;
     min-height: 100vh;
     min-height: 100svh;
     // Clear the fixed navbar above and the fixed footer below, then centre the
-    // introduction in the space between. The bottom room has to live in here:
-    // snapping stops at the introduction's own bottom edge, so the space the
+    // section in the space between. The bottom room has to live in here:
+    // snapping stops at the last section's own bottom edge, so the space the
     // page keeps below it for the footer can no longer be scrolled to. A
-    // longer introduction, as on a phone, just runs from the top.
+    // longer section, as on a phone, just runs from the top.
     // Uneven on purpose: the navbar is taller than the footer and the
     // introduction's own margins are uneven too, and these values balance
     // them so the text sits in the middle of the screen.
@@ -188,7 +188,7 @@ html.home-snap {
     flex-direction: column;
     justify-content: center;
 
-    // On a phone the introduction runs longer than the screen, so there is
+    // On a phone a section can run longer than the screen, so there is
     // nothing to centre: keep the top tight and leave the footer, which wraps
     // onto two lines there, more room below.
     @media (max-width: 576px) {
