@@ -1,0 +1,47 @@
+{% comment %}
+  Coursework grouped by area, from _data/coursework.yml; styled in
+  _coursework_areas.scss. An area marked `collapsed` is folded into a
+  disclosure, so it stays out of the way until asked for.
+{% endcomment %}
+{% assign areas = site.data.coursework %}
+{% assign total_courses = 0 %}
+{% for area in areas %}
+  {% assign total_courses = total_courses | plus: area.courses.size %}
+{% endfor %}
+
+<p class="cwa-summary">{{ total_courses }} courses at Carnegie Mellon, grouped by area</p>
+
+<div class="cwa">
+  {% for area in areas %}
+    {% capture heading %}
+      {{ area.area }} <span class="cwa-count">{{ area.courses.size }}</span>
+    {% endcapture %}
+    {% if area.collapsed %}
+      <details class="cwa-area cwa-folded">
+        <summary class="cwa-heading">{{ heading }}</summary>
+    {% else %}
+      <section class="cwa-area">
+        <h2 class="cwa-heading">{{ heading }}</h2>
+    {% endif %}
+    <ol class="cwa-list">
+      {% for course in area.courses %}
+        <li class="cwa-course">
+          <span class="cwa-code">{{ course.code }}</span>
+          <span class="cwa-name">
+            {%- if course.url -%}
+              <a href="{{ course.url }}" target="_blank" rel="noopener">{{ course.name }}</a>
+            {%- else -%}
+              {{ course.name }}
+            {%- endif -%}
+          </span>
+          <span class="cwa-term">{{ course.term }}</span>
+        </li>
+      {% endfor %}
+    </ol>
+    {% if area.collapsed %}
+      </details>
+    {% else %}
+      </section>
+    {% endif %}
+  {% endfor %}
+</div>

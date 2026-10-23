@@ -1,0 +1,205 @@
+# Coursework, grouped by area, shown on /coursework/ (see _includes/coursework_areas.liquid).
+# Areas appear in this order, and courses within an area newest first.
+# `url` is optional and links the course name. An area with `collapsed: true`
+# starts folded away.
+
+- area: Systems
+  courses:
+    - code: 15-645
+      name: Database Systems
+      term: Fall 2026
+    - code: 11-868
+      name: Large Language Model Systems
+      term: Fall 2026
+    - code: 15-440
+      name: Distributed Systems
+      term: Fall 2025
+    - code: 15-213
+      name: Introduction to Computer Systems
+      term: Summer 2024
+      url: https://www.cs.cmu.edu/afs/cs/academic/class/15213-m24/www/
+
+- area: AI, Vision & Graphics
+  courses:
+    - code: 15-689
+      name: Independent Study
+      term: Fall 2026
+    - code: 10-301
+      name: Introduction to Machine Learning
+      term: Spring 2026
+    - code: 15-362
+      name: Computer Graphics
+      term: Spring 2025
+      url: http://15362.courses.cs.cmu.edu/spring2025/
+    - code: 16-385
+      name: Computer Vision
+      term: Fall 2024
+
+- area: Programming
+  courses:
+    - code: 15-210
+      name: Parallel and Sequential Data Structures and Algorithms
+      term: Fall 2024
+      url: https://www.cs.cmu.edu/afs/cs/academic/class/15210-f24/www-f24/
+    - code: 15-150
+      name: Principles of Functional Programming
+      term: Spring 2024
+      url: https://www.cs.cmu.edu/~15150/
+    - code: 15-122
+      name: Principles of Imperative Computation
+      term: Fall 2023
+    - code: 15-112
+      name: Fundamentals of Programming and Computer Science
+      term: Spring 2023
+
+- area: Theory & Mathematics
+  courses:
+    - code: 21-325
+      name: Probability
+      term: Spring 2025
+    - code: 36-200
+      name: Reasoning with Data
+      term: Spring 2025
+    - code: 21-241
+      name: Matrices and Linear Transformations
+      term: Summer 2024
+    - code: 15-251
+      name: Great Ideas in Theoretical Computer Science
+      term: Spring 2024
+      url: https://www.pandanotes.org/servers/cs251s24/
+    - code: 21-259
+      name: Calculus in Three Dimensions
+      term: Spring 2024
+    - code: 21-127
+      name: Concepts of Mathematics
+      term: Fall 2023
+    - code: 21-122
+      name: Integration and Approximation
+      term: Spring 2023
+
+- area: HCI & Design
+  courses:
+    - code: 05-891
+      name: Designing Human Centered Software
+      term: Fall 2026
+    - code: 99-358
+      name: "IDeATe: Introduction to Unity3D"
+      term: Spring 2026
+    - code: 05-362
+      name: Transformational Game Design Studio
+      term: Fall 2025
+    - code: 05-413
+      name: Human Factors
+      term: Fall 2024
+    - code: 67-220
+      name: Digital Accessibility - Ensuring Universal Access to the Information Society
+      term: Fall 2023
+
+- area: Cognitive Science
+  courses:
+    - code: 85-310
+      name: Research Methods in Cognitive Psychology
+      term: Fall 2025
+    - code: 85-419
+      name: Introduction to Parallel Distributed Processing
+      term: Spring 2025
+    - code: 85-219
+      name: Foundations of Brain and Behavior
+      term: Fall 2024
+    - code: 85-211
+      name: Cognitive Psychology
+      term: Spring 2024
+    - code: 88-120
+      name: Reason, Passion and Cognition
+      term: Fall 2022
+
+- area: Architecture & Art
+  courses:
+    - code: 48-241
+      name: Modern History of Architecture & Theory
+      term: Spring 2026
+    - code: 99-520
+      name: Collaborative Research through Projects
+      term: Summer 2024
+    - code: 48-355
+      name: Perspective
+      term: Spring 2024
+    - code: 48-356
+      name: Color Drawing
+      term: Fall 2023
+    - code: 48-240
+      name: History of World Architecture I
+      term: Spring 2023
+    - code: 62-123
+      name: Digital Media II
+      term: Spring 2023
+    - code: 62-126
+      name: Drawing II
+      term: Spring 2023
+    - code: 48-100
+      name: "Architecture Design Studio: POIESIS STUDIO 1"
+      term: Fall 2022
+    - code: 48-104
+      name: Shop Skills
+      term: Fall 2022
+    - code: 62-104
+      name: Design Ethics & Social Justice in Architecture
+      term: Fall 2022
+    - code: 62-122
+      name: Digital Media I
+      term: Fall 2022
+    - code: 62-125
+      name: Drawing I
+      term: Fall 2022
+
+- area: BXA Interdisciplinary
+  courses:
+    - code: 52-402
+      name: "BXA Seminar V: Capstone Project"
+      term: Spring 2026
+    - code: 52-401
+      name: "BXA Seminar IV: Capstone Project Research"
+      term: Fall 2025
+    - code: 52-392
+      name: "BXA Seminar III: Deconstructing Disciplines"
+      term: Spring 2025
+    - code: 52-291
+      name: "BXA Seminar II: Transferring Knowledge"
+      term: Spring 2024
+    - code: 52-190
+      name: "BXA Seminar I: Building the Wunderkammer"
+      term: Spring 2023
+
+- area: General Education & PE
+  collapsed: true
+  courses:
+    - code: 99-384
+      name: "Technology, Humanity and Social Justice: Health"
+      term: Spring 2026
+    - code: 69-136
+      name: Basketball Skills
+      term: Spring 2026
+    - code: 33-120
+      name: Science and Science Fiction
+      term: Fall 2025
+    - code: 33-121
+      name: Physics I for Science Students
+      term: Spring 2025
+    - code: 69-151
+      name: Introduction to Yoga
+      term: Spring 2025
+    - code: 82-270
+      name: Technology in Japanese Culture and Society
+      term: Fall 2024
+    - code: 69-151
+      name: Introduction to Yoga
+      term: Fall 2024
+    - code: 76-101
+      name: Interpretation and Argument
+      term: Spring 2023
+    - code: 76-100
+      name: Reading and Writing in an Academic Context
+      term: Fall 2022
+    - code: 79-295
+      name: Legacies of Fascism and Anti-Fascism
+      term: Fall 2022

@@ -55,6 +55,24 @@ body.hide-navbar {
   }
 }
 
+// The name at the left of the navbar, set like the title on the home page:
+// first name heavy, last name light.
+#navbar .site-wordmark {
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 0.01em;
+  color: var(--global-text-color);
+  transition: color 0.2s ease;
+
+  &:hover {
+    color: var(--global-hover-color);
+  }
+}
+
+.site-wordmark-first {
+  font-weight: 600;
+}
+
 body.sticky-bottom-footer {
   // Remove padding below footer.
   padding-bottom: 0;

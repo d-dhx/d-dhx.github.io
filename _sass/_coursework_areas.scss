@@ -1,0 +1,141 @@
+// Coursework grouped by area (see _includes/coursework_areas.liquid).
+//
+// The areas sit two to a row on a wide screen, read left to right in the
+// order of the data file, and the folded area runs across both at the end.
+// Within an area every course is one row: its number, its name, and the
+// semester it was taken, right-aligned so the eye can run down any of the three.
+
+.cwa-summary {
+  margin: -0.5rem 0 2.5rem;
+  color: var(--global-text-color-light);
+  font-size: 0.9rem;
+}
+
+.cwa {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  column-gap: 4rem;
+
+  @media (max-width: 767px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cwa-area {
+  margin-bottom: 2.5rem;
+}
+
+.cwa-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0 0 0.75rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--global-divider-color);
+  font-size: 1.3rem;
+  font-weight: 300;
+  color: var(--global-text-color);
+}
+
+.cwa-count {
+  color: var(--global-text-color-light);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cwa-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cwa-course {
+  display: grid;
+  grid-template-columns: 4.25rem 1fr auto;
+  column-gap: 0.75rem;
+  align-items: baseline;
+  padding: 0.3rem 0;
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.cwa-code {
+  color: var(--global-text-color-light);
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.cwa-name a {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: var(--global-divider-color);
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: var(--global-theme-color);
+    text-decoration-color: currentColor;
+  }
+}
+
+.cwa-term {
+  color: var(--global-text-color-light);
+  font-size: 0.78rem;
+  white-space: nowrap;
+}
+
+// General education and PE, folded away below the rest.
+.cwa-folded {
+  grid-column: 1 / -1;
+  margin-top: 0.5rem;
+
+  .cwa-heading {
+    cursor: pointer;
+    list-style: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+
+    // a chevron that turns down when the area is open
+    &::after {
+      content: "";
+      align-self: center;
+      width: 0.45rem;
+      height: 0.45rem;
+      margin-left: 0.2rem;
+      border-right: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
+      transform: rotate(-45deg);
+      transition: transform 0.2s ease;
+    }
+  }
+
+  &[open] .cwa-heading::after {
+    transform: rotate(45deg);
+  }
+
+  .cwa-list {
+    column-count: 2;
+    column-gap: 4rem;
+
+    @media (max-width: 767px) {
+      column-count: 1;
+    }
+  }
+
+  .cwa-course {
+    break-inside: avoid;
+  }
+}
+
+// On a phone the semester drops under the name rather than squeezing it.
+@media (max-width: 576px) {
+  .cwa-course {
+    grid-template-columns: 4rem 1fr;
+  }
+
+  .cwa-term {
+    grid-column: 2;
+  }
+}

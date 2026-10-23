@@ -3,8 +3,8 @@
   <nav id="navbar" class="navbar navbar-light navbar-expand-sm {% if site.navbar_fixed %}fixed-top{% else %}sticky-top{% endif %}" role="navigation">
     <div class="container">
       {% if page.permalink != '/' %}
-        <a class="navbar-brand title font-weight-lighter" href="{{ site.baseurl }}/">
-          <img src="{{ site.baseurl }}/assets/img/logo.png" alt="Site Logo" style="height: 40px;">
+        <a class="navbar-brand site-wordmark" href="{{ site.baseurl }}/">
+          <span class="site-wordmark-first">{{ site.first_name }}</span> {{ site.last_name }}
         </a>
       {% elsif site.enable_navbar_social %}
         <!-- Social Icons -->
