@@ -32,10 +32,35 @@ $grey-900: #212529;
 $white-color: #ffffff !default;
 $black-color: #000000 !default;
 
+// Site palette (see _themes.scss). Every pair clears 4.5:1 against its page.
+$paper-color: #f6f4ee; // the page
+$paper-color-light: #fbfaf6; // cards on it
+$ink-color: #1e1c19; // text
+$ink-color-light: #736d65; // secondary text
+$vermilion-color: #b4442f; // links, current page, marks
+// the same, for the dark theme
+$ink-paper-color: #161513;
+$ink-paper-color-light: #1f1d1a;
+$paper-ink-color: #e9e5dc;
+$paper-ink-color-light: #9a948a;
+$vermilion-color-light: #d9694f;
+
+// Fibre paper: a photograph of handmade paper by Anyzoy Studio on Unsplash
+// (unsplash.com/photos/4Ih3-mYkcGU, Unsplash License), cut into a seamless
+// tile and shifted onto $paper-color, or inverted onto $ink-paper-color for
+// the dark theme. The images are 2400 by 1350, shown at half that for sharp
+// detail on high-density screens.
+$paper-tile-size: 1200px 675px;
+
 // Theme colors
 
 $code-bg-color-light: rgba($purple-color, 0.05);
 $code-bg-color-dark: #2c3237 !default;
+
+// Typefaces (loaded in _includes/head.liquid): a sans for reading and the
+// interface, a serif for the name and headings
+$font-sans: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+$font-serif: "Newsreader", Georgia, "Times New Roman", serif;
 
 // Font awesome location
 $fa-font-path: "../webfonts";

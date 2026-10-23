@@ -3,9 +3,10 @@
 // On load a quarter of the cards flies in from each corner of the screen and
 // gathers in a pile in the middle. The pile then drifts apart, each card
 // gliding along a gentle curve to its place in one of two rows pinned to the
-// top and bottom of the viewport. Hovering a card
-// (or tapping it, or focusing it from the keyboard) lifts it out of its row
-// and sets it down large in the centre. Scrolling past the deck reveals the
+// top and bottom of the viewport, around the name in the middle. Hovering a
+// card (or tapping it, or focusing it from the keyboard) lifts it out of its
+// row and sets it down large in the centre, in place of the name, which comes
+// back once the pointer leaves the rows. Scrolling past the deck reveals the
 // introduction below it.
 (function () {
   const deck = document.querySelector(".home-deck");
@@ -57,6 +58,7 @@
   const board = deck.querySelector(".home-deck-board");
   const stage = deck.querySelector(".home-deck-stage");
   const layers = Array.from(stage.querySelectorAll("img"));
+  const title = deck.querySelector(".home-deck-title");
   const hint = deck.querySelector(".home-deck-hint");
   const scrollCue = deck.querySelector(".home-deck-scroll");
   const intro = document.getElementById("home-intro");
@@ -68,6 +70,7 @@
   let cards = [];
   let lifted = null;
   let front = 0;
+  let dropTimer = null;
   let dealt = false;
 
   function clamp(value, low, high) {
@@ -147,7 +150,7 @@
     stage.style.top = box.y + "px";
     stage.style.width = box.size + "px";
     stage.style.height = box.size + "px";
-    if (hint) hint.style.top = box.y + box.size / 2 - 10 + "px";
+    if (title) title.style.top = box.y + box.size / 2 + "px";
     if (scrollCue) scrollCue.style.top = geo.cueY + "px";
   }
 
@@ -349,8 +352,9 @@
     dealt = true;
     deck.classList.remove("is-dealing");
     deck.classList.add("is-settled");
-    // the hint only makes sense once there are cards in rows to hover
-    if (hint && !lifted) hint.classList.remove("is-hidden");
+    // the name waits until the pile has cleared the middle, and the hint
+    // under it only makes sense once there are cards in rows to hover
+    if (title && !lifted) title.classList.remove("is-hidden");
   }
 
   // Give the photos a moment to arrive so the cards do not fly in blank, but
@@ -370,11 +374,12 @@
   // --- lifting a card into the centre -------------------------------------
 
   function show(card) {
+    clearTimeout(dropTimer);
     if (!dealt || card === lifted) return;
     if (lifted) lifted.el.classList.remove("is-lifted");
     card.el.classList.add("is-lifted");
     lifted = card;
-    if (hint) hint.classList.add("is-hidden");
+    if (title) title.classList.add("is-hidden");
 
     const incoming = layers[1 - front];
     const outgoing = layers[front];
@@ -397,6 +402,9 @@
     const dx = card.slot.x - box.x;
     const dy = card.slot.y - box.y;
 
+    // the outgoing photo may already be on its way out (see drop), so it
+    // fades from wherever it has got to rather than flashing back in
+    const outgoingOpacity = getComputedStyle(outgoing).opacity;
     incoming.getAnimations().forEach(function (a) {
       a.cancel();
     });
@@ -414,11 +422,36 @@
       { duration: reduceMotion ? 0 : 520, easing: "cubic-bezier(.2,.8,.2,1)", fill: "forwards" }
     );
     if (outgoing.getAttribute("src")) {
-      outgoing.animate([{ opacity: 1 }, { opacity: 0 }], {
+      outgoing.animate([{ opacity: outgoingOpacity }, { opacity: 0 }], {
         duration: reduceMotion ? 0 : 260,
         fill: "forwards",
       });
     }
+  }
+
+  // Put the lifted photo back and let the name return to the middle.
+  function drop() {
+    clearTimeout(dropTimer);
+    if (!lifted) return;
+    lifted.el.classList.remove("is-lifted");
+    lifted = null;
+    const layer = layers[front];
+    const opacity = getComputedStyle(layer).opacity;
+    layer.getAnimations().forEach(function (a) {
+      a.cancel();
+    });
+    layer.animate([{ opacity: opacity }, { opacity: 0 }], {
+      duration: reduceMotion ? 0 : 260,
+      fill: "forwards",
+    });
+    if (title) title.classList.remove("is-hidden");
+  }
+
+  // Leaving a card only drops its photo if no other card is picked up in the
+  // meantime, so running the pointer along a row keeps a photo on show.
+  function dropSoon() {
+    clearTimeout(dropTimer);
+    dropTimer = setTimeout(drop, 450);
   }
 
   function bindCard(card) {
@@ -432,8 +465,9 @@
         show(card);
       }, 70);
     });
-    card.el.addEventListener("pointerleave", function () {
+    card.el.addEventListener("pointerleave", function (event) {
       clearTimeout(intent);
+      if (event.pointerType === "mouse") dropSoon();
     });
 
     // taps, and clicks that beat the hover pause
@@ -443,6 +477,7 @@
     card.el.addEventListener("focus", function () {
       show(card);
     });
+    card.el.addEventListener("blur", dropSoon);
   }
 
   // --- the introduction below ---------------------------------------------
@@ -501,12 +536,13 @@
     geo = measure();
     placeChrome();
     build();
-    if (hint) {
-      hint.textContent = finePointer ? "hover a card" : "tap a card";
-      hint.classList.add("is-hidden");
-    }
+    if (hint) hint.textContent = finePointer ? "hover a photo" : "tap a photo";
     revealIntro();
     watchNavbar();
+    // on a touch screen, tapping anywhere off the cards puts the photo back
+    deck.addEventListener("click", function (event) {
+      if (!event.target.closest(".deck-card")) drop();
+    });
     if (scrollCue && intro) {
       scrollCue.addEventListener("click", function (event) {
         event.preventDefault();
@@ -574,8 +610,9 @@
           });
           layer.removeAttribute("src");
         });
+        clearTimeout(dropTimer);
         lifted = null;
-        if (hint) hint.classList.remove("is-hidden");
+        if (title) title.classList.remove("is-hidden");
 
         geo = measure();
         placeChrome();

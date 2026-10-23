@@ -5,6 +5,9 @@ body {
   padding-bottom: 170px;
   color: var(--global-text-color);
   background-color: var(--global-bg-color);
+  // the bars fixed over the page carry the same paper (see _base.scss)
+  background-image: var(--global-paper-texture);
+  background-size: $paper-tile-size;
 
   h1,
   h2,
@@ -14,7 +17,13 @@ body {
   h6 {
     scroll-margin-top: 66px;
   }
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: $font-sans;
+
+  h1,
+  h2,
+  .post-title {
+    font-family: $font-serif;
+  }
 }
 
 body.fixed-top-nav {

@@ -26,13 +26,34 @@
 
   <div class="home-deck-board"></div>
 
+  {% comment %}
+    Who this is, in the middle of the first screen. A lifted photo takes its
+    place and it comes back once the pointer leaves the rows. Hidden from the
+    start, so it fades in once the cards settle rather than flashing on load.
+  {% endcomment %}
+  <div class="home-deck-title is-hidden">
+    <p class="home-deck-name">
+      <span class="font-weight-bold">{{ site.first_name }}</span> {{ site.last_name }}
+    </p>
+    {% if page.tagline %}
+      {% comment %} split at the dots, so a narrow screen breaks the line there and nowhere else {% endcomment %}
+      {% assign tagline_parts = page.tagline | split: ' · ' %}
+      <p class="home-deck-tagline">
+        {%- for part in tagline_parts -%}
+          {%- unless forloop.first -%}
+            <span class="home-deck-tagline-sep"> · </span>
+          {%- endunless -%}
+          <span class="home-deck-tagline-part">{{ part }}</span>
+        {%- endfor -%}
+      </p>
+    {% endif %}
+    <p class="home-deck-hint"></p>
+  </div>
+
   <figure class="home-deck-stage" aria-hidden="true">
     <img alt="">
     <img alt="">
   </figure>
-
-  {% comment %} hidden from the start, so it fades in once the cards settle rather than flashing on load {% endcomment %}
-  <p class="home-deck-hint is-hidden"></p>
 
   <a class="home-deck-scroll" href="#home-intro" aria-label="Scroll to introduction">
     <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" focusable="false">

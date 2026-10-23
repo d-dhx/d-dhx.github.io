@@ -4,26 +4,31 @@
 
 @use "sass:color";
 
+// Paper, ink and one vermilion accent. The photographs bring the colour, so
+// the page stays quiet around them and the accent marks only what can be
+// clicked or is current.
 :root {
-  --global-bg-color: #f7f7f2;
+  --global-bg-color: #{$paper-color};
   --global-code-bg-color: #{$code-bg-color-light};
-  --global-text-color: #{$black-color};
-  --global-text-color-light: #{$grey-color};
-  --global-theme-color: #666666;
-  --global-hover-color: #666666;
+  --global-text-color: #{$ink-color};
+  --global-text-color-light: #{$ink-color-light};
+  --global-theme-color: #{$vermilion-color};
+  --global-hover-color: #{$vermilion-color};
   --global-hover-text-color: #{$white-color};
-  --global-footer-bg-color: #{$grey-color-dark};
-  --global-footer-text-color: #{$grey-color-light};
-  --global-footer-link-color: #{$white-color};
-  --global-distill-app-color: #{$grey-color};
-  --global-divider-color: rgba(0, 0, 0, 0.1);
-  --global-card-bg-color: #{$white-color};
+  // the footer is part of the page, not a bar across it
+  --global-footer-bg-color: #{$paper-color};
+  --global-footer-text-color: #{$ink-color-light};
+  --global-footer-link-color: #{$ink-color};
+  --global-distill-app-color: #{$ink-color-light};
+  --global-divider-color: #{rgba($ink-color, 0.1)};
+  --global-card-bg-color: #{$paper-color-light};
+  --global-paper-texture: url("../img/paper/paper-light.webp");
   --global-highlight-color: #{$red-color-dark};
   --global-back-to-top-bg-color: rgba(
-    #{color.channel($black-color, "red", $space: rgb)},
-    #{color.channel($black-color, "green", $space: rgb)},
-    #{color.channel($black-color, "blue", $space: rgb)},
-    0.4
+    #{color.channel($ink-color, "red", $space: rgb)},
+    #{color.channel($ink-color, "green", $space: rgb)},
+    #{color.channel($ink-color, "blue", $space: rgb)},
+    0.35
   );
   --global-back-to-top-text-color: #{$white-color};
   --global-newsletter-bg-color: #{$white-color};
@@ -75,19 +80,20 @@
 }
 
 html[data-theme="dark"] {
-  --global-bg-color: #{$grey-color-dark};
+  --global-bg-color: #{$ink-paper-color};
   --global-code-bg-color: #{$code-bg-color-dark};
-  --global-text-color: #{$grey-color-light};
-  --global-text-color-light: #{$grey-color};
-  --global-theme-color: #{$cyan-color};
-  --global-hover-color: #{$cyan-color};
+  --global-text-color: #{$paper-ink-color};
+  --global-text-color-light: #{$paper-ink-color-light};
+  --global-theme-color: #{$vermilion-color-light};
+  --global-hover-color: #{$vermilion-color-light};
   --global-hover-text-color: #{$white-color};
-  --global-footer-bg-color: #{$grey-color-light};
-  --global-footer-text-color: #{$grey-color-dark};
-  --global-footer-link-color: #{$black-color};
-  --global-distill-app-color: #{$grey-color-light};
-  --global-divider-color: #424246;
-  --global-card-bg-color: #{$grey-900};
+  --global-footer-bg-color: #{$ink-paper-color};
+  --global-footer-text-color: #{$paper-ink-color-light};
+  --global-footer-link-color: #{$paper-ink-color};
+  --global-distill-app-color: #{$paper-ink-color-light};
+  --global-divider-color: #{rgba($paper-ink-color, 0.12)};
+  --global-card-bg-color: #{$ink-paper-color-light};
+  --global-paper-texture: url("../img/paper/paper-dark.webp");
   --global-back-to-top-bg-color: rgba(
     #{color.channel($white-color, "red", $space: rgb)},
     #{color.channel($white-color, "green", $space: rgb)},
