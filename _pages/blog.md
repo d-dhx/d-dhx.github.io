@@ -2,7 +2,7 @@
 layout: default
 permalink: /blog/
 title: Blog
-nav: true
+nav: false # out of the navbar until there is more to read; course reviews are linked from /coursework/
 nav_order: 1
 pagination:
   enabled: true

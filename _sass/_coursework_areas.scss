@@ -11,6 +11,28 @@
   font-size: 0.9rem;
 }
 
+// Course reviews written up as posts, one line each, tucked under the
+// summary; the summary gives up its space below to them.
+.cwa-reviews {
+  margin: -1.75rem 0 2.5rem;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+
+  li {
+    margin: 0.2rem 0;
+  }
+
+  a::after {
+    content: " →";
+  }
+}
+
+.cwa-reviews-note {
+  margin-left: 0.5rem;
+  color: var(--global-text-color-light);
+}
+
 .cwa {
   display: grid;
   grid-template-columns: 1fr 1fr;

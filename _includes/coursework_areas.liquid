@@ -9,7 +9,20 @@
   {% assign total_courses = total_courses | plus: area.courses.size %}
 {% endfor %}
 
+{% comment %} posts tagged "course review" are listed under the summary, newest first {% endcomment %}
+{% assign reviews = site.posts | where_exp: 'post', "post.tags contains 'course review'" %}
+
 <p class="cwa-summary">{{ total_courses }} courses at Carnegie Mellon, grouped by area</p>
+{% if reviews.size > 0 %}
+  <ul class="cwa-reviews">
+    {% for post in reviews %}
+      <li>
+        <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        <span class="cwa-reviews-note">{{ post.description }}</span>
+      </li>
+    {% endfor %}
+  </ul>
+{% endif %}
 
 <div class="cwa">
   {% for area in areas %}
