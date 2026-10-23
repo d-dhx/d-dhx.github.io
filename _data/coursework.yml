@@ -17,7 +17,8 @@
     - code: 15-213
       name: Introduction to Computer Systems
       term: Summer 2024
-      url: https://www.cs.cmu.edu/afs/cs/academic/class/15213-m24/www/
+      # the Summer 2024 site asks for a CMU login, so this is the public course home
+      url: https://www.cs.cmu.edu/~213/
 
 - area: AI, Vision & Graphics
   courses:
@@ -40,7 +41,7 @@
     - code: 15-210
       name: Parallel and Sequential Data Structures and Algorithms
       term: Fall 2024
-      url: https://www.cs.cmu.edu/afs/cs/academic/class/15210-f24/www-f24/
+      url: https://www.cs.cmu.edu/afs/cs/academic/class/15210-f24/www/
     - code: 15-150
       name: Principles of Functional Programming
       term: Spring 2024
@@ -66,7 +67,7 @@
     - code: 15-251
       name: Great Ideas in Theoretical Computer Science
       term: Spring 2024
-      url: https://www.pandanotes.org/servers/cs251s24/
+      # no link: the Spring 2024 site asks for a CMU login and there is no public copy
     - code: 21-259
       name: Calculus in Three Dimensions
       term: Spring 2024
