@@ -1,0 +1,45 @@
+{% comment %}
+  Publications, the home page's screen after education and teaching.
+  The papers live in _data/publications.yml; styled in _home_publications.scss,
+  which builds on the education screen's pieces so the two read as a set.
+{% endcomment %}
+{% assign pubs = site.data.publications %}
+{% if pubs and pubs.papers %}
+  <section class="home-screen" id="home-publications" aria-label="Publications">
+    <div class="home-pubs">
+      <h2 class="home-bg-heading">publications</h2>
+      <ol class="home-bg-list">
+        {% for paper in pubs.papers %}
+          <li class="home-bg-item">
+            <p class="home-bg-when">{{ paper.date }} · {{ paper.venue }}</p>
+            <h3 class="home-bg-title">
+              <a href="https://doi.org/{{ paper.doi }}" target="_blank" rel="noopener">{{ paper.title }}</a>
+            </h3>
+            <p class="home-pub-authors">
+              {%- for author in paper.authors -%}
+                {%- if author == pubs.me -%}
+                  <strong class="home-pub-me">{{ author }}</strong>
+                {%- else -%}
+                  {{ author }}
+                {%- endif -%}
+                {%- unless forloop.last %}, {% endunless -%}
+              {%- endfor -%}
+            </p>
+            <p class="home-bg-note">
+              {{ paper.published_in }}
+              {%- if paper.place %} · {{ paper.place }}{% endif %}
+            </p>
+            <p class="home-pub-doi">
+              <a href="https://doi.org/{{ paper.doi }}" target="_blank" rel="noopener">doi:{{ paper.doi }}</a>
+            </p>
+          </li>
+        {% endfor %}
+      </ol>
+      {% if pubs.orcid %}
+        <p class="home-pubs-more">
+          <a href="https://orcid.org/{{ pubs.orcid }}" target="_blank" rel="noopener">Full record on ORCID →</a>
+        </p>
+      {% endif %}
+    </div>
+  </section>
+{% endif %}

@@ -1,0 +1,52 @@
+// Publications on the home page (see _includes/home_publications.liquid).
+//
+// Built from education and teaching's pieces (the heading, the timeline rule
+// and its marks, the date line, the title and the note; see
+// _home_background.scss), so the two screens read as a set. Only what papers
+// need beyond that lives here. As a screen of its own it is sized and centred
+// with the others (see .home-screen in _home_deck.scss); without the snap it
+// simply follows education and teaching.
+
+#home-publications {
+  margin-top: 4rem;
+}
+
+html.home-snap #home-publications {
+  margin-top: 0;
+}
+
+// paper titles run long, so keep the lines to a readable length
+.home-pubs {
+  max-width: 50rem;
+}
+
+.home-pub-authors {
+  margin: 0.15rem 0 0.2rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.home-pub-me {
+  font-weight: 600;
+}
+
+.home-pub-doi,
+.home-pubs-more {
+  a {
+    color: var(--global-text-color-light);
+
+    &:hover {
+      color: var(--global-theme-color);
+    }
+  }
+}
+
+.home-pub-doi {
+  margin: 0.2rem 0 0;
+  font-size: 0.78rem;
+}
+
+.home-pubs-more {
+  margin: 1.75rem 0 0;
+  font-size: 0.85rem;
+}

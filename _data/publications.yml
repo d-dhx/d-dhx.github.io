@@ -1,0 +1,25 @@
+# Publications, shown on the home page as the screen after education and
+# teaching (see _includes/home_publications.liquid). Newest first.
+#
+# Taken from ORCID and checked against Crossref, the DOI registry: titles,
+# authors and venues are as published there.
+# `me` is the name picked out in each author list. `place` is optional.
+
+me: Xie He
+orcid: 0009-0005-8073-5801
+
+papers:
+  - title: "MetaBeads: Enabling Shape- and Stiffness-Changing Interfaces through Beaded Metamaterials"
+    authors: [Yujia Liu, Yuyu Lin, Xie He, Victoria Sun, Trevor J Jones, Alexandra Ion]
+    venue: UIST '26
+    published_in: Proceedings of the 39th Annual ACM Symposium on User Interface Software and Technology
+    place: Detroit, Michigan
+    date: November 2026
+    doi: 10.1145/3830398.3830618
+
+  - title: "Signals of AI Hallucination: Designing Hallucination-Aware Cues for Embodied Conversational Agents in VR"
+    authors: [Xiaoran Yang, Yang Zhan, Xie He, Yuxuan Huang, Yichen Yu, Zhuo Wang, Noboru Matsuda, Qiao Jin]
+    venue: IEEE TVCG
+    published_in: IEEE Transactions on Visualization and Computer Graphics
+    date: "2026"
+    doi: 10.1109/TVCG.2026.3747489
