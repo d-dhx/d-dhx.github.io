@@ -1,19 +1,19 @@
 # Newest first. Add future projects here; the page uses this order.
-- title: KV cache break-even
-  url: /technical-projects/kv-cache-break-even/
+- title: "BreakEven: Cost-Aware KV Cache Retention"
+  url: /technical-projects/break-even-kv-cache/
   period: Fall 2026
   area: LLM systems
-  summary: Exploring when reusing an LLM's KV cache costs less than recomputing the same prefix.
+  summary: Measuring when a paused LLM request should keep, evict, or offload its KV cache.
   language: Python
-  topics: [KV-cache reuse, inference cost analysis]
+  topics: [KV cache retention, inference cost analysis]
 
-- title: Database system implementation
-  url: /technical-projects/database-system/
+- title: "BusTub: Database System Implementation"
+  url: /technical-projects/bustub/
   period: Fall 2026
   area: Database systems
-  summary: Implemented the first three BusTub projects, covering a buffer pool manager, a B+ tree index, and query execution.
+  summary: Built a concurrent buffer pool and B+ tree index with adaptive replacement and lazy deletion.
   language: C++
-  topics: [storage, indexing, query execution]
+  topics: [buffer management, B+ trees, concurrency]
 
 - title: Raft consensus
   url: /technical-projects/raft/
@@ -29,12 +29,12 @@
   area: Distributed systems
   summary: Built a distributed proof-of-work miner that divides nonce searches among workers and collects their results.
   language: Go
-  topics: [work scheduling, networking, fault tolerance]
+  topics: [work scheduling, networking]
 
 - title: Scotty3D
   url: /technical-projects/scotty3d/
   period: Spring 2025
   area: Computer graphics
-  summary: Implemented a software rasterizer, half-edge mesh editing operations, and a Monte Carlo path tracer.
+  summary: Built a software rasterizer, half-edge mesh editing operations, and a Monte Carlo path tracer.
   language: C++
   topics: [rendering, geometry, path tracing]

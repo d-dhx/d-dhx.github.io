@@ -6,6 +6,8 @@ permalink: /technical-projects/scotty3d/
 nav: false
 ---
 
+## Motivation
+
 Scotty3D is a CMU graphics project that connects interactive geometry tools with offline rendering. I worked through three parts of the pipeline, moving from pixels to mesh structure to light transport.
 
 ## Software rasterizer

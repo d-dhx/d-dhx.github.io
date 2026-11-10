@@ -81,7 +81,7 @@
 - area: HCI & Design
   courses:
     - code: 05-891
-      name: Designing Human Centered Software
+      name: Design Human-Centered Software
       term: Fall 2026
     - code: 99-358
       name: "IDeATe: Introduction to Unity3D"
