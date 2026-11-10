@@ -63,7 +63,9 @@
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18);
   cursor: pointer;
   will-change: transform;
-  transition: opacity 0.3s ease, box-shadow 0.2s ease;
+  transition:
+    opacity 0.3s ease,
+    box-shadow 0.2s ease;
 
   // Tone the photographs down a little so images of every colour read as one set.
   img {

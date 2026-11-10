@@ -191,9 +191,7 @@
   // bottom row comes from the right. Stagger each row in its direction of
   // travel so the photographs arrive as a sequence instead of a single slab.
   function offscreenX(card) {
-    return card.slot.row === 0
-      ? card.slot.x - geo.vw - geo.size
-      : card.slot.x + geo.vw + geo.size;
+    return card.slot.row === 0 ? card.slot.x - geo.vw - geo.size : card.slot.x + geo.vw + geo.size;
   }
 
   function holdOffscreen() {
@@ -214,13 +212,12 @@
     return finished(
       cards.map(function (card) {
         const rank = card.slot.row === 0 ? card.slot.col : geo.perRow - 1 - card.slot.col;
-        return card.el.animate(
-          [
-            { transform: transformFor(offscreenX(card), card.slot.y) },
-            { transform: transformFor(card.slot.x, card.slot.y) },
-          ],
-          { duration: 850, delay: rank * 45, easing: "cubic-bezier(.2,.7,.2,1)", fill: "both" }
-        );
+        return card.el.animate([{ transform: transformFor(offscreenX(card), card.slot.y) }, { transform: transformFor(card.slot.x, card.slot.y) }], {
+          duration: 850,
+          delay: rank * 45,
+          easing: "cubic-bezier(.2,.7,.2,1)",
+          fill: "both",
+        });
       })
     );
   }
@@ -271,8 +268,12 @@
     const dx = card.slot.x - box.x;
     const dy = card.slot.y - box.y;
     const outgoingOpacity = getComputedStyle(outgoing).opacity;
-    incoming.getAnimations().forEach(function (animation) { animation.cancel(); });
-    outgoing.getAnimations().forEach(function (animation) { animation.cancel(); });
+    incoming.getAnimations().forEach(function (animation) {
+      animation.cancel();
+    });
+    outgoing.getAnimations().forEach(function (animation) {
+      animation.cancel();
+    });
     incoming.style.zIndex = 2;
     outgoing.style.zIndex = 1;
 
@@ -298,7 +299,9 @@
     lifted = null;
     const layer = layers[front];
     const opacity = getComputedStyle(layer).opacity;
-    layer.getAnimations().forEach(function (animation) { animation.cancel(); });
+    layer.getAnimations().forEach(function (animation) {
+      animation.cancel();
+    });
     layer.animate([{ opacity: opacity }, { opacity: 0 }], {
       duration: reduceMotion ? 0 : 260,
       fill: "forwards",
@@ -315,14 +318,20 @@
     let intent = null;
     card.el.addEventListener("pointerenter", function (event) {
       if (event.pointerType !== "mouse") return;
-      intent = setTimeout(function () { show(card); }, 70);
+      intent = setTimeout(function () {
+        show(card);
+      }, 70);
     });
     card.el.addEventListener("pointerleave", function (event) {
       clearTimeout(intent);
       if (event.pointerType === "mouse") dropSoon();
     });
-    card.el.addEventListener("click", function () { show(card); });
-    card.el.addEventListener("focus", function () { show(card); });
+    card.el.addEventListener("click", function () {
+      show(card);
+    });
+    card.el.addEventListener("focus", function () {
+      show(card);
+    });
     card.el.addEventListener("blur", dropSoon);
   }
 
@@ -496,7 +505,9 @@
           });
         });
         layers.forEach(function (layer) {
-          layer.getAnimations().forEach(function (animation) { animation.cancel(); });
+          layer.getAnimations().forEach(function (animation) {
+            animation.cancel();
+          });
           layer.removeAttribute("src");
         });
         clearTimeout(dropTimer);
