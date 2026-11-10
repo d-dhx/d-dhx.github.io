@@ -1,74 +1,42 @@
 ---
 layout: page
-title: Portfolio
+title: Arts
 permalink: /portfolio/
-description: A growing collection of my inspirations
+description: Drawing, graphic work, photography, and spatial studies.
 nav: true
-nav_order: 3
-display_categories: [1D, 2D, 3D]
-horizontal: false
+nav_order: 4
 ---
 
-<!-- pages/projects.md -->
-<div class="projects">
-{% if site.enable_project_categories and page.display_categories %}
-  <!-- Display categorized projects -->
-  {% for category in page.display_categories %}
-  <a id="{{ category }}" href=".#{{ category }}">
-    <h2 class="category">{{ category }}</h2>
-  </a>
-  {% assign categorized_projects = site.projects | where: "category", category %}
-  {% assign sorted_projects = categorized_projects | sort: "importance" %}
-  <!-- Generate cards for each project -->
-  {% if page.horizontal %}
-  <div class="container">
-    <div class="row row-cols-1 row-cols-md-2">
-    {% for project in sorted_projects %}
-      {% include projects_horizontal.liquid %}
-    {% endfor %}
-    </div>
-  </div>
-  {% else %}
-  <!-- A category scrolls sideways rather than wrapping, so adding a project
-       never leaves a lone card stranded on a second row. -->
-  <div class="scroller-wrap">
-    <button class="scroller-btn scroller-prev" type="button" aria-label="Scroll {{ category }} projects left" hidden>&#8249;</button>
-    <div class="scroller" tabindex="0" role="region" aria-label="{{ category }} projects">
-      {% for project in sorted_projects %}
-        {% include projects.liquid %}
-      {% endfor %}
-    </div>
-    <button class="scroller-btn scroller-next" type="button" aria-label="Scroll {{ category }} projects right" hidden>&#8250;</button>
-  </div>
-  {% endif %}
+<div class="arts-showcase">
+  {% assign art_categories = "2D,3D" | split: "," %}
+  {% for category in art_categories %}
+    {% assign works = site.projects | where: "category", category | sort: "importance" %}
+    {% if works.size > 0 %}
+      <section class="arts-section" aria-labelledby="arts-{{ category }}">
+        <div class="arts-section-head">
+          {% if category == "2D" %}
+            <h2 id="arts-{{ category }}">Image &amp; graphic work</h2>
+            <span class="arts-section-kicker">01 / 02</span>
+          {% else %}
+            <h2 id="arts-{{ category }}">Objects &amp; space</h2>
+            <span class="arts-section-kicker">02 / 02</span>
+          {% endif %}
+        </div>
+        <div class="arts-grid">
+          {% for project in works %}
+            <a class="arts-work" href="{{ project.url | relative_url }}" aria-label="View {{ project.title }}">
+              <span class="arts-work-image">
+                <img src="{{ project.thumb | default: project.img | relative_url }}" alt="{{ project.title | escape }} preview"{% if project.thumb_position %} style="object-position: {{ project.thumb_position }};"{% endif %} {% if category == "2D" and forloop.first %}loading="eager"{% else %}loading="lazy"{% endif %}>
+              </span>
+              <span class="arts-work-meta">
+                <span class="arts-work-title">{{ project.title }}</span>
+                <span class="arts-work-arrow" aria-hidden="true">→</span>
+              </span>
+              <span class="arts-work-description">{{ project.description }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      </section>
+    {% endif %}
   {% endfor %}
-
-{% else %}
-
-<!-- row row-cols-1 row-cols-md-3 -->
-<!-- Display projects without categories -->
-
-{% assign sorted_projects = site.projects | sort: "importance" %}
-
-  <!-- Generate cards for each project -->
-
-{% if page.horizontal %}
-
-  <div class="container">
-    <div class="row row-cols-1 row-cols-md-2">
-    {% for project in sorted_projects %}
-      {% include projects_horizontal.liquid %}
-    {% endfor %}
-    </div>
-  </div>
-  {% else %}
-  <div class="row row-cols-1 row-cols-md-3">
-    {% for project in sorted_projects %}
-      {% include projects.liquid %}
-    {% endfor %}
-  </div>
-  {% endif %}
-{% endif %}
 </div>
-
-<script src="{{ '/assets/js/project-scroller.js' | relative_url }}"></script>

@@ -8,16 +8,13 @@ layout: default
       {% if site.title == 'blank' %}
         <span class="font-weight-bold">{{ site.first_name }}</span> {{ site.middle_name }}
         {{ site.last_name }}
+        {% if page.intro_alias %}<span class="home-intro-alias">/ {{ page.intro_alias }}</span>{% endif %}
       {% else %}
         {{ site.title }}
       {% endif %}
     </h1>
     <p class="desc">{{ page.subtitle }}</p>
   </header>
-
-  <div id="loader">
-    <div class="spinner"></div>
-  </div>
 
   <article>
     {% if page.profile %}
@@ -83,16 +80,7 @@ layout: default
     {% endif %}
   </article>
 
-  <!-- Loader script -->
-  <script>
-    window.addEventListener('load', function () {
-      const loader = document.getElementById('loader');
-      loader.style.opacity = 0;
-      setTimeout(() => (loader.style.display = 'none'), 400); // match CSS transition
-    });
-  </script>
-  <script src="{{ '/assets/js/loader.js' | relative_url }}"></script>
-  <script src="{{ '/assets/js/home-deck.js' | relative_url }}"></script>
+  <script src="{{ '/assets/js/home-deck.js' | relative_url }}?v=rows-hover"></script>
 </div>
 {% include home_background.liquid %}
 {% include home_publications.liquid %}

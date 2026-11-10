@@ -3,6 +3,7 @@ layout: page
 title: Perspective
 description: Architectural freehand drawings emphasize the use of perspective to convey spatial depth and structure.
 img: assets/img/projects/drawing/drawing_1.png
+thumb: assets/img/arts_thumbs/perspective.webp
 importance: 2
 category: 2D
 giscus_comments: false

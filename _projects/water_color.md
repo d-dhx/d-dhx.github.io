@@ -3,6 +3,7 @@ layout: page
 title: Watercolor
 description: Watercolor drawings showcase
 img: assets/img/projects/water_color/2.png
+thumb: assets/img/arts_thumbs/watercolor.webp
 importance: 3
 category: 2D
 related_publications: false

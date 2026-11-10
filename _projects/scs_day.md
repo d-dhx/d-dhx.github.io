@@ -3,6 +3,7 @@ layout: page
 title: SCS Day Design
 description: Graphic design work for SCS Day 2025/2026
 img: assets/img/projects/scs_day/stickers_2025.jpg
+thumb: assets/img/arts_thumbs/scs-day.webp
 importance: 1
 category: 2D
 ---

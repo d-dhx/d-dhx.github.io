@@ -14,12 +14,12 @@
       {% if ext == '.jpg' or ext == '.jpeg' or ext == '.png' or ext == '.webp' %}
         {% assign deck_count = deck_count | plus: 1 %}
         {% assign deck_src = f.path | relative_url %}
-        <li data-thumb="{{ deck_src }}" data-full="{{ deck_src }}"></li>
+        <li data-full="{{ deck_src }}"></li>
       {% endif %}
     {% endfor %}
     {% if deck_count == 0 %}
       {% for i in (1..32) %}
-        <li data-thumb="https://picsum.photos/seed/diane-{{ i }}/320/320" data-full="https://picsum.photos/seed/diane-{{ i }}/800/800"></li>
+        <li data-full="https://picsum.photos/seed/diane-{{ i }}/800/800"></li>
       {% endfor %}
     {% endif %}
   </ol>
@@ -27,11 +27,9 @@
   <div class="home-deck-board"></div>
 
   {% comment %}
-    Who this is, in the middle of the first screen. A lifted photo takes its
-    place and it comes back once the pointer leaves the rows. Hidden from the
-    start, so it fades in once the cards settle rather than flashing on load.
+    Who this is, in the middle of the first screen, framed by the photo rows.
   {% endcomment %}
-  <div class="home-deck-title is-hidden">
+  <div class="home-deck-title">
     <p class="home-deck-name">
       <span class="font-weight-bold">{{ site.first_name }}</span> {{ site.last_name }}
     </p>

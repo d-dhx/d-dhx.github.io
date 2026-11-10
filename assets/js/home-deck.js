@@ -1,13 +1,9 @@
 // Front-page photo deck.
 //
-// On load a quarter of the cards flies in from each corner of the screen and
-// gathers in a pile in the middle. The pile then drifts apart, each card
-// gliding along a gentle curve to its place in one of two rows pinned to the
-// top and bottom of the viewport, around the name in the middle. Hovering a
-// card (or tapping it, or focusing it from the keyboard) lifts it out of its
-// row and sets it down large in the centre, in place of the name, which comes
-// back once the pointer leaves the rows. Scrolling past the deck reveals the
-// introduction below it.
+// On the first load in a tab, the upper row of cards slides in from the left
+// and the lower row slides in from the right. The rows frame the name in the
+// middle of the first screen. After the rows settle, hovering or tapping a
+// photograph shows it in the middle. Scrolling reveals the introduction below.
 (function () {
   const deck = document.querySelector(".home-deck");
   const navbar = document.getElementById("navbar");
@@ -39,7 +35,7 @@
   if (arrivedAtIntro) history.replaceState(null, "", location.pathname + location.search);
 
   const sources = Array.from(deck.querySelectorAll(".home-deck-source li")).map(function (li) {
-    return { thumb: li.dataset.thumb, full: li.dataset.full };
+    return li.dataset.full;
   });
   if (sources.length === 0) {
     updateNavbar();
@@ -65,6 +61,7 @@
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const introSeenKey = "home-deck-rows-hover-entrance-seen";
 
   let geo = null;
   let cards = [];
@@ -77,10 +74,10 @@
     return Math.max(low, Math.min(high, value));
   }
 
-  // Every keyframe uses the same list of functions, so the browser can
-  // interpolate position, size and tilt independently.
-  function transformFor(x, y, scale, rotation) {
-    return "translate(" + round(x) + "px, " + round(y) + "px) scale(" + round(scale, 4) + ") rotate(" + round(rotation || 0) + "deg)";
+  // Only horizontal position changes during the entrance; each row stays at
+  // its final height and every photograph stays square at its final size.
+  function transformFor(x, y) {
+    return "translate(" + round(x) + "px, " + round(y) + "px)";
   }
 
   // rounded, so tiny floats never print in exponent form
@@ -89,8 +86,20 @@
     return Math.round(value * factor) / factor;
   }
 
-  function between(low, high) {
-    return low + Math.random() * (high - low);
+  function introSeen() {
+    try {
+      return sessionStorage.getItem(introSeenKey) === "1";
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function markIntroSeen() {
+    try {
+      sessionStorage.setItem(introSeenKey, "1");
+    } catch (_) {
+      // Storage can be unavailable; the entrance still runs once on this load.
+    }
   }
 
   // Work out where everything goes. The stylesheet already spans the deck
@@ -120,18 +129,10 @@
       }
     }
 
-    // the centre stage fills the band between the rows, with room to breathe
     const bandTop = topY + size + 28;
     const bandBottom = bottomY - 44;
-    // about a third of the width on a wide screen, most of it on a phone, and
-    // never more than three quarters of the band, so the photo has margin
     const stageMax = wide ? vw * 0.34 : vw * 0.78;
     const stageSize = Math.max(0, Math.min((bandBottom - bandTop) * 0.75, stageMax));
-    const stageBox = {
-      x: (vw - stageSize) / 2,
-      y: bandTop + (bandBottom - bandTop - stageSize) / 2,
-      size: stageSize,
-    };
 
     return {
       vw: vw,
@@ -139,7 +140,7 @@
       perRow: perRow,
       size: size,
       slots: slots,
-      stageBox: stageBox,
+      stageBox: { x: (vw - stageSize) / 2, y: (vh - stageSize) / 2, size: stageSize },
       cueY: bottomY - 34,
     };
   }
@@ -150,7 +151,6 @@
     stage.style.top = box.y + "px";
     stage.style.width = box.size + "px";
     stage.style.height = box.size + "px";
-    if (title) title.style.top = box.y + box.size / 2 + "px";
     if (scrollCue) scrollCue.style.top = geo.cueY + "px";
   }
 
@@ -166,7 +166,7 @@
       el.style.height = geo.size + "px";
 
       const img = document.createElement("img");
-      img.src = source.full;
+      img.src = source;
       img.alt = "";
       img.decoding = "async";
       el.appendChild(img);
@@ -182,77 +182,23 @@
   function place(card) {
     card.el.style.width = geo.size + "px";
     card.el.style.height = geo.size + "px";
-    card.el.style.transform = transformFor(card.slot.x, card.slot.y, 1, 0);
+    card.el.style.transform = transformFor(card.slot.x, card.slot.y);
   }
 
-  // --- the intro: gather from the corners, then drift into place --------
+  // --- the intro: the two rows enter from opposite sides -----------------
 
-  // During the intro each card is drawn at the size of the enlarged photo and
-  // shrunk on its way to its slot. Drawing it large and scaling down keeps it
-  // sharp; drawing it small and scaling up would blur it.
-
-  // Where a full-size card has to be, scaled down, to sit exactly in its slot.
-  // It scales about its own centre.
-  function restingPlace(card) {
-    const big = geo.stageBox.size;
-    const shift = (geo.size - big) / 2;
-    return { x: card.slot.x + shift, y: card.slot.y + shift, scale: geo.size / big };
+  // Cards stay at their final size. The top row comes from the left; the
+  // bottom row comes from the right. Stagger each row in its direction of
+  // travel so the photographs arrive as a sequence instead of a single slab.
+  function offscreenX(card) {
+    return card.slot.row === 0
+      ? card.slot.x - geo.vw - geo.size
+      : card.slot.x + geo.vw + geo.size;
   }
 
-  // Plan each card's route. A quarter of the deck comes in from each corner:
-  // the corner nearest the slot the card will end up in, so each quarter
-  // gathers from one side and drifts back out towards it. Within a corner the
-  // arrival order is random, which mixes the four streams together in the pile.
-  function planIntro() {
-    const big = geo.stageBox.size;
-    const box = geo.stageBox;
-    const corners = [[], [], [], []];
-    cards.forEach(function (card) {
-      const right = card.slot.col >= geo.perRow / 2;
-      const bottom = card.slot.row === 1;
-      corners[(bottom ? 2 : 0) + (right ? 1 : 0)].push(card);
-    });
-
-    corners.forEach(function (group, corner) {
-      const right = corner % 2 === 1;
-      const bottom = corner >= 2;
-      for (let i = group.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const swap = group[i];
-        group[i] = group[j];
-        group[j] = swap;
-      }
-      group.forEach(function (card, rank) {
-        card.route = {
-          rank: rank,
-          // just beyond the corner, so the card slides in from off screen
-          start: {
-            x: right ? geo.vw + between(20, 80) : -big - between(20, 80),
-            y: bottom ? geo.vh + between(20, 80) : -big - between(20, 80),
-            rotation: between(-18, 18),
-          },
-          // an untidy pile on the stage, the later arrivals on top
-          pile: {
-            x: box.x + between(-10, 10),
-            y: box.y + between(-10, 10) - rank * 0.8,
-            rotation: between(-6, 6),
-          },
-        };
-        // cards landing at the same moment from different corners interleave
-        card.el.style.zIndex = rank * 4 + corner + 1;
-      });
-    });
-  }
-
-  // Before anything moves, every card waits off screen at full size.
   function holdOffscreen() {
-    const big = geo.stageBox.size;
-    planIntro();
     cards.forEach(function (card) {
-      const start = card.route.start;
-      card.el.style.width = big + "px";
-      card.el.style.height = big + "px";
-      card.el.style.transform = transformFor(start.x, start.y, 1, start.rotation);
+      card.el.style.transform = transformFor(offscreenX(card), card.slot.y);
     });
   }
 
@@ -264,87 +210,24 @@
     );
   }
 
-  function wait(ms) {
-    return new Promise(function (resolve) {
-      setTimeout(resolve, ms);
-    });
-  }
-
-  function gatherThenDrift() {
-    // all four corners at once, each card a little after the one before it
-    // from the same corner, so the pile builds up
-    const gathering = cards.map(function (card) {
-      const route = card.route;
-      return card.el.animate(
-        [
-          { transform: transformFor(route.start.x, route.start.y, 1, route.start.rotation) },
-          { transform: transformFor(route.pile.x, route.pile.y, 1, route.pile.rotation) },
-        ],
-        { duration: 950, delay: route.rank * 55, easing: "cubic-bezier(.2,.7,.3,1)", fill: "both" }
-      );
-    });
-
-    return finished(gathering)
-      .then(function () {
-        // the pile rests for a beat before it comes apart
-        return wait(200);
-      })
-      .then(function () {
-        return finished(
-          cards.map(function (card) {
-            return drift(card);
-          })
+  function slideRowsIn() {
+    return finished(
+      cards.map(function (card) {
+        const rank = card.slot.row === 0 ? card.slot.col : geo.perRow - 1 - card.slot.col;
+        return card.el.animate(
+          [
+            { transform: transformFor(offscreenX(card), card.slot.y) },
+            { transform: transformFor(card.slot.x, card.slot.y) },
+          ],
+          { duration: 850, delay: rank * 45, easing: "cubic-bezier(.2,.7,.2,1)", fill: "both" }
         );
-      });
-  }
-
-  // Drift a card from the pile to its slot along a gentle curve, shrinking as
-  // it goes. Every card bends the same way, so the pile unwinds like a swirl,
-  // and each sets off at a slightly different moment.
-  function drift(card) {
-    const from = card.route.pile;
-    const to = restingPlace(card);
-    const dx = to.x - from.x;
-    const dy = to.y - from.y;
-    const length = Math.hypot(dx, dy) || 1;
-    // the curve's control point: the midpoint, pushed out to one side
-    const bend = Math.min(90, length * 0.2) * between(0.7, 1);
-    const cx = from.x + dx / 2 - (dy / length) * bend;
-    const cy = from.y + dy / 2 + (dx / length) * bend;
-    const sway = between(-5, 5);
-
-    const steps = 8;
-    const frames = [];
-    for (let k = 0; k <= steps; k++) {
-      const t = k / steps;
-      const u = 1 - t;
-      frames.push({
-        offset: t,
-        transform:
-          k === steps
-            ? transformFor(to.x, to.y, to.scale, 0)
-            : transformFor(
-                u * u * from.x + 2 * u * t * cx + t * t * to.x,
-                u * u * from.y + 2 * u * t * cy + t * t * to.y,
-                1 + (to.scale - 1) * t,
-                from.rotation * u + sway * Math.sin(Math.PI * t)
-              ),
-      });
-    }
-
-    return card.el.animate(frames, {
-      duration: 1200,
-      delay: between(0, 250),
-      easing: "cubic-bezier(.4,0,.2,1)",
-      fill: "forwards",
-    });
+      })
+    );
   }
 
   function settle() {
     cards.forEach(function (card) {
       place(card);
-      card.el.style.zIndex = "";
-      card.route = null;
       card.el.getAnimations().forEach(function (a) {
         a.cancel();
       });
@@ -352,9 +235,6 @@
     dealt = true;
     deck.classList.remove("is-dealing");
     deck.classList.add("is-settled");
-    // the name waits until the pile has cleared the middle, and the hint
-    // under it only makes sense once there are cards in rows to hover
-    if (title && !lifted) title.classList.remove("is-hidden");
   }
 
   // Give the photos a moment to arrive so the cards do not fly in blank, but
@@ -371,46 +251,28 @@
     return Promise.race([decoded, timeout]);
   }
 
-  // --- lifting a card into the centre -------------------------------------
+  // --- photo preview, available only after the rows have arrived ----------
 
   function show(card) {
     clearTimeout(dropTimer);
-    if (!dealt || card === lifted) return;
+    if (!dealt || card === lifted || geo.stageBox.size <= 0) return;
     if (lifted) lifted.el.classList.remove("is-lifted");
     card.el.classList.add("is-lifted");
     lifted = card;
-    if (title) title.classList.add("is-hidden");
+    title.classList.add("is-hidden");
 
     const incoming = layers[1 - front];
     const outgoing = layers[front];
     front = 1 - front;
+    incoming.src = card.source;
 
-    // start from the thumbnail, which is already loaded, and upgrade to the
-    // full image once it arrives
-    incoming.src = card.source.thumb;
-    if (card.source.full !== card.source.thumb) {
-      const full = new Image();
-      full.onload = function () {
-        if (lifted === card) incoming.src = card.source.full;
-      };
-      full.src = card.source.full;
-    }
-
-    // FLIP: begin exactly over the card in its row, then travel to the stage
     const box = geo.stageBox;
     const scale = geo.size / box.size;
     const dx = card.slot.x - box.x;
     const dy = card.slot.y - box.y;
-
-    // the outgoing photo may already be on its way out (see drop), so it
-    // fades from wherever it has got to rather than flashing back in
     const outgoingOpacity = getComputedStyle(outgoing).opacity;
-    incoming.getAnimations().forEach(function (a) {
-      a.cancel();
-    });
-    outgoing.getAnimations().forEach(function (a) {
-      a.cancel();
-    });
+    incoming.getAnimations().forEach(function (animation) { animation.cancel(); });
+    outgoing.getAnimations().forEach(function (animation) { animation.cancel(); });
     incoming.style.zIndex = 2;
     outgoing.style.zIndex = 1;
 
@@ -429,7 +291,6 @@
     }
   }
 
-  // Put the lifted photo back and let the name return to the middle.
   function drop() {
     clearTimeout(dropTimer);
     if (!lifted) return;
@@ -437,18 +298,14 @@
     lifted = null;
     const layer = layers[front];
     const opacity = getComputedStyle(layer).opacity;
-    layer.getAnimations().forEach(function (a) {
-      a.cancel();
-    });
+    layer.getAnimations().forEach(function (animation) { animation.cancel(); });
     layer.animate([{ opacity: opacity }, { opacity: 0 }], {
       duration: reduceMotion ? 0 : 260,
       fill: "forwards",
     });
-    if (title) title.classList.remove("is-hidden");
+    title.classList.remove("is-hidden");
   }
 
-  // Leaving a card only drops its photo if no other card is picked up in the
-  // meantime, so running the pointer along a row keeps a photo on show.
   function dropSoon() {
     clearTimeout(dropTimer);
     dropTimer = setTimeout(drop, 450);
@@ -456,56 +313,17 @@
 
   function bindCard(card) {
     let intent = null;
-
-    // a short pause before lifting, so sweeping the pointer across a row does
-    // not launch every card it passes over
     card.el.addEventListener("pointerenter", function (event) {
       if (event.pointerType !== "mouse") return;
-      intent = setTimeout(function () {
-        show(card);
-      }, 70);
+      intent = setTimeout(function () { show(card); }, 70);
     });
     card.el.addEventListener("pointerleave", function (event) {
       clearTimeout(intent);
       if (event.pointerType === "mouse") dropSoon();
     });
-
-    // taps, and clicks that beat the hover pause
-    card.el.addEventListener("click", function () {
-      show(card);
-    });
-    card.el.addEventListener("focus", function () {
-      show(card);
-    });
+    card.el.addEventListener("click", function () { show(card); });
+    card.el.addEventListener("focus", function () { show(card); });
     card.el.addEventListener("blur", dropSoon);
-  }
-
-  // --- the introduction below ---------------------------------------------
-
-  // The introduction's heading and text, and each column of the education and
-  // teaching screen after it.
-  function revealIntro() {
-    const parts = Array.from(document.querySelectorAll("#home-intro > header, #home-intro > article, #home-background .home-bg-col"));
-    if (parts.length === 0) return;
-    if (reduceMotion || !("IntersectionObserver" in window)) return;
-
-    parts.forEach(function (el) {
-      el.classList.add("home-reveal");
-    });
-    const observer = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-revealed");
-            observer.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.15 }
-    );
-    parts.forEach(function (el) {
-      observer.observe(el);
-    });
   }
 
   // --- start --------------------------------------------------------------
@@ -536,10 +354,9 @@
     geo = measure();
     placeChrome();
     build();
-    if (hint) hint.textContent = finePointer ? "hover a photo" : "tap a photo";
-    revealIntro();
+    hint.textContent = finePointer ? "hover a photo" : "tap a photo";
     watchNavbar();
-    // on a touch screen, tapping anywhere off the cards puts the photo back
+    stepByScreen();
     deck.addEventListener("click", function (event) {
       if (!event.target.closest(".deck-card")) drop();
     });
@@ -550,12 +367,19 @@
       });
     }
 
-    if (reduceMotion) {
+    if (reduceMotion || introSeen()) {
+      if (reduceMotion) markIntroSeen();
       settle();
     } else {
       deck.classList.add("is-dealing");
       holdOffscreen();
-      whenPhotosReady().then(whenVisible).then(gatherThenDrift).then(settle, settle);
+      whenPhotosReady()
+        .then(whenVisible)
+        .then(function () {
+          markIntroSeen();
+          return slideRowsIn();
+        })
+        .then(settle, settle);
     }
 
     function watchNavbar() {
@@ -574,6 +398,73 @@
         { passive: true }
       );
       updateNavbar();
+    }
+
+    // One wheel or trackpad gesture moves exactly one screen: the deck, the
+    // introduction, then education and teaching. Snapping alone lets a gentle
+    // notch spring back and a hard swipe's momentum carry on, so a gesture
+    // that would leave the current screen is taken over here: the page glides
+    // to the next screen and the rest of the gesture, momentum included, is
+    // swallowed. A screen taller than the window (the introduction on a phone)
+    // scrolls as usual until its edge. Touch and keys keep the browser's own
+    // snapping, which already stops once per swipe or key press.
+    function stepByScreen() {
+      const screens = [deck].concat(Array.from(document.querySelectorAll(".home-screen")));
+      if (screens.length < 2) return;
+      let busy = false;
+      let target = 0;
+      let started = 0;
+      let quiet = null;
+
+      // where each screen starts, and where it ends for a screen taller than the window
+      function spans() {
+        const vh = window.innerHeight;
+        return screens.map(function (el) {
+          const top = el.getBoundingClientRect().top + window.scrollY;
+          return { top: top, end: top + Math.max(0, el.offsetHeight - vh) };
+        });
+      }
+
+      // The gesture is over once the page has arrived and the wheel has been
+      // still for a moment, so trailing momentum cannot start another step. If
+      // the page never arrives (the scroll bar was grabbed, say), give up waiting.
+      function release() {
+        clearTimeout(quiet);
+        quiet = setTimeout(function () {
+          if (Math.abs(window.scrollY - target) <= 2 || Date.now() - started > 1500) busy = false;
+          else release();
+        }, 220);
+      }
+
+      window.addEventListener(
+        "wheel",
+        function (event) {
+          if (event.ctrlKey || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
+          if (busy) {
+            event.preventDefault();
+            release();
+            return;
+          }
+          const down = event.deltaY > 0;
+          const y = window.scrollY;
+          const s = spans();
+          let i = 0;
+          while (i + 1 < s.length && s[i + 1].top <= y + 2) i++;
+          // inside a tall screen, scroll it as usual until its edge
+          if (down ? y < s[i].end - 2 : y > s[i].top + 2) return;
+          const next = down ? i + 1 : i - 1;
+          if (next < 0 || next >= s.length) return;
+
+          event.preventDefault();
+          busy = true;
+          started = Date.now();
+          // coming back up into a tall screen lands on its end, where the reader left it
+          target = Math.round(down ? s[next].top : s[next].end);
+          window.scrollTo({ top: target, behavior: reduceMotion ? "auto" : "smooth" });
+          release();
+        },
+        { passive: false }
+      );
     }
 
     // A page opened in a background tab would otherwise play its intro unseen,
@@ -605,15 +496,13 @@
           });
         });
         layers.forEach(function (layer) {
-          layer.getAnimations().forEach(function (a) {
-            a.cancel();
-          });
+          layer.getAnimations().forEach(function (animation) { animation.cancel(); });
           layer.removeAttribute("src");
         });
         clearTimeout(dropTimer);
         lifted = null;
-        if (title) title.classList.remove("is-hidden");
-
+        front = 0;
+        title.classList.remove("is-hidden");
         geo = measure();
         placeChrome();
         build();

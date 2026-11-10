@@ -3,6 +3,8 @@ layout: page
 title: "Fuzzy"
 description: "Capturing my first-year college life through a film lens"
 img: /assets/img/projects/film/film02.jpg
+thumb: assets/img/arts_thumbs/fuzzy.webp
+thumb_position: right center
 importance: 5
 category: 2D
 ---

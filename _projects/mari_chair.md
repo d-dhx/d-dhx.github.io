@@ -3,6 +3,7 @@ layout: page
 title: Mari Chair Construction
 description: Building Enzo Mari's Sedia, studied through axonometric and movement drawings
 img: assets/img/projects/mari_chair/thumb_axonometric.jpg
+thumb: assets/img/arts_thumbs/mari-chair.webp
 importance: 1
 category: 3D
 ---

@@ -3,6 +3,7 @@ layout: page
 title: Extend
 description: The Cooper Union Summer School 2021
 img: assets/img/projects/cu/composite_drawing.jpg
+thumb: assets/img/arts_thumbs/extend.webp
 importance: 3
 category: 3D
 ---
