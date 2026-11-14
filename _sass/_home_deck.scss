@@ -100,6 +100,13 @@
   pointer-events: none;
 }
 
+// While the theme script has `transition: all` switched on across the page
+// (html.transition in _base.scss), keep it off the cards' position: they are
+// moved by the deck's script alone, and must never glide there on their own.
+html.transition .deck-card {
+  transition-property: opacity, box-shadow !important;
+}
+
 .home-deck-stage {
   position: absolute;
   margin: 0;
@@ -205,6 +212,29 @@
   }
 }
 
+// Each screen below the deck with another after it carries the same arrow at
+// its foot, just above the fixed footer, a little smaller and fainter so it
+// stays out of the text's way. The deck's script adds them and tells this
+// sheet the footer's height.
+.home-screen-next {
+  position: absolute;
+  left: 50%;
+  bottom: calc(var(--home-footer-height, 36px) + 6px);
+  transform: translateX(-50%);
+  display: block;
+  padding: 2px 12px;
+  line-height: 0;
+  color: var(--global-text-color-light);
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--global-theme-color);
+    opacity: 1;
+  }
+}
+
 // The fixed navbar would otherwise cover the top of the introduction when the
 // scroll cue jumps to it. Only without the snap: there the margin would also
 // move the introduction's snap point 80px up, leaving a strip of the deck in
@@ -239,6 +269,8 @@ html.home-snap {
     // them so the text sits in the middle of the screen.
     padding-top: 5.8rem;
     padding-bottom: 3.75rem;
+    // the arrow to the next screen is placed against the screen's foot
+    position: relative;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -256,6 +288,7 @@ html.home-snap {
 @media (prefers-reduced-motion: reduce) {
   .deck-card,
   .deck-card img,
+  .home-screen-next,
   .home-deck-title {
     transition: none;
   }

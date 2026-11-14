@@ -82,7 +82,7 @@ layout: default
     {% endif %}
   </article>
 
-  <script src="{{ '/assets/js/home-deck.js' | relative_url }}?v=rows-hover"></script>
+  <script src="{{ '/assets/js/home-deck.js' | relative_url | bust_file_cache }}"></script>
 </div>
 {% include home_background.liquid %}
 {% include home_publications.liquid %}

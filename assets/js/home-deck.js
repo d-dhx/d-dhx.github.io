@@ -57,7 +57,6 @@
   const title = deck.querySelector(".home-deck-title");
   const hint = deck.querySelector(".home-deck-hint");
   const scrollCue = deck.querySelector(".home-deck-scroll");
-  const intro = document.getElementById("home-intro");
 
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   const finePointer = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
@@ -142,6 +141,7 @@
       slots: slots,
       stageBox: { x: (vw - stageSize) / 2, y: (vh - stageSize) / 2, size: stageSize },
       cueY: bottomY - 34,
+      footerHeight: footerHeight,
     };
   }
 
@@ -152,9 +152,48 @@
     stage.style.width = box.size + "px";
     stage.style.height = box.size + "px";
     if (scrollCue) scrollCue.style.top = geo.cueY + "px";
+    // the cues on the screens below sit just above the fixed footer (see _home_deck.scss)
+    document.documentElement.style.setProperty("--home-footer-height", geo.footerHeight + "px");
   }
 
-  function build() {
+  // --- a cue to the next screen ---------------------------------------------
+
+  // The deck has its arrow in the page already. Every screen below it that has
+  // another after it gets the same arrow at its foot, pointing to that one.
+  function addScreenCues() {
+    const screens = Array.from(document.querySelectorAll(".home-screen"));
+    screens.forEach(function (screen, i) {
+      const next = screens[i + 1];
+      if (!next || !next.id) return;
+      const cue = document.createElement("a");
+      cue.className = "home-screen-next";
+      cue.href = "#" + next.id;
+      cue.setAttribute("aria-label", "Scroll to " + (next.getAttribute("aria-label") || "the next section").toLowerCase());
+      cue.innerHTML =
+        '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">' +
+        '<path d="M5 9l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" />' +
+        "</svg>";
+      screen.appendChild(cue);
+    });
+  }
+
+  // Any of the arrows glides to the screen it points at, as a swipe would.
+  function followCues() {
+    document.addEventListener("click", function (event) {
+      const cue = event.target.closest(".home-deck-scroll, .home-screen-next");
+      if (!cue) return;
+      const to = document.getElementById((cue.getAttribute("href") || "").slice(1));
+      if (!to) return;
+      event.preventDefault();
+      to.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
+    });
+  }
+
+  // Each card is given its position before it joins the page. At load the
+  // theme script switches on `transition: all` across the page for a moment
+  // (html.transition in _base.scss), so a card moved after it had been laid
+  // out would glide there from the corner, across the middle of the screen.
+  function build(offscreen) {
     board.textContent = "";
     cards = geo.slots.map(function (slot, i) {
       const source = sources[i % sources.length];
@@ -164,6 +203,7 @@
       el.setAttribute("aria-label", "Show photo " + ((i % sources.length) + 1));
       el.style.width = geo.size + "px";
       el.style.height = geo.size + "px";
+      el.style.transform = transformFor(offscreen ? offscreenX(slot) : slot.x, slot.y);
 
       const img = document.createElement("img");
       img.src = source;
@@ -190,14 +230,8 @@
   // Cards stay at their final size. The top row comes from the left; the
   // bottom row comes from the right. Stagger each row in its direction of
   // travel so the photographs arrive as a sequence instead of a single slab.
-  function offscreenX(card) {
-    return card.slot.row === 0 ? card.slot.x - geo.vw - geo.size : card.slot.x + geo.vw + geo.size;
-  }
-
-  function holdOffscreen() {
-    cards.forEach(function (card) {
-      card.el.style.transform = transformFor(offscreenX(card), card.slot.y);
-    });
+  function offscreenX(slot) {
+    return slot.row === 0 ? slot.x - geo.vw - geo.size : slot.x + geo.vw + geo.size;
   }
 
   function finished(animations) {
@@ -212,12 +246,15 @@
     return finished(
       cards.map(function (card) {
         const rank = card.slot.row === 0 ? card.slot.col : geo.perRow - 1 - card.slot.col;
-        return card.el.animate([{ transform: transformFor(offscreenX(card), card.slot.y) }, { transform: transformFor(card.slot.x, card.slot.y) }], {
-          duration: 850,
-          delay: rank * 45,
-          easing: "cubic-bezier(.2,.7,.2,1)",
-          fill: "both",
-        });
+        return card.el.animate(
+          [{ transform: transformFor(offscreenX(card.slot), card.slot.y) }, { transform: transformFor(card.slot.x, card.slot.y) }],
+          {
+            duration: 850,
+            delay: rank * 45,
+            easing: "cubic-bezier(.2,.7,.2,1)",
+            fill: "both",
+          }
+        );
       })
     );
   }
@@ -360,28 +397,24 @@
         { once: true }
       );
     }
+    const entrance = !reduceMotion && !introSeen();
     geo = measure();
     placeChrome();
-    build();
+    build(entrance);
     hint.textContent = finePointer ? "hover a photo" : "tap a photo";
     watchNavbar();
     stepByScreen();
     deck.addEventListener("click", function (event) {
       if (!event.target.closest(".deck-card")) drop();
     });
-    if (scrollCue && intro) {
-      scrollCue.addEventListener("click", function (event) {
-        event.preventDefault();
-        intro.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth" });
-      });
-    }
+    addScreenCues();
+    followCues();
 
-    if (reduceMotion || introSeen()) {
+    if (!entrance) {
       if (reduceMotion) markIntroSeen();
       settle();
     } else {
       deck.classList.add("is-dealing");
-      holdOffscreen();
       whenPhotosReady()
         .then(whenVisible)
         .then(function () {
@@ -413,17 +446,23 @@
     // introduction, then education and teaching. Snapping alone lets a gentle
     // notch spring back and a hard swipe's momentum carry on, so a gesture
     // that would leave the current screen is taken over here: the page glides
-    // to the next screen and the rest of the gesture, momentum included, is
+    // to the next screen and the rest of that gesture, momentum included, is
     // swallowed. A screen taller than the window (the introduction on a phone)
     // scrolls as usual until its edge. Touch and keys keep the browser's own
     // snapping, which already stops once per swipe or key press.
+    //
+    // A trackpad keeps sending momentum for a second or more after the fingers
+    // lift, and nothing in a wheel event says which swipe it belongs to. So a
+    // new swipe is recognised by its shape: momentum only ever fades, while a
+    // fresh push arrives after a pause or clearly stronger than what came just
+    // before. That lets the next swipe move on at once, instead of being
+    // swallowed along with the momentum of the last one.
     function stepByScreen() {
       const screens = [deck].concat(Array.from(document.querySelectorAll(".home-screen")));
       if (screens.length < 2) return;
-      let busy = false;
-      let target = 0;
-      let started = 0;
-      let quiet = null;
+      let step = null; // the glide under way, or the last one while its momentum fades
+      let lastTime = -Infinity;
+      let level = 0; // how strong the wheel has been over the last few events
 
       // where each screen starts, and where it ends for a screen taller than the window
       function spans() {
@@ -434,29 +473,50 @@
         });
       }
 
-      // The gesture is over once the page has arrived and the wheel has been
-      // still for a moment, so trailing momentum cannot start another step. If
-      // the page never arrives (the scroll bar was grabbed, say), give up waiting.
-      function release() {
-        clearTimeout(quiet);
-        quiet = setTimeout(function () {
-          if (Math.abs(window.scrollY - target) <= 2 || Date.now() - started > 1500) busy = false;
-          else release();
-        }, 220);
+      // Is this the start of a new push, rather than more of the last one?
+      function isFresh(event) {
+        const unit = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? window.innerHeight : 1;
+        const size = Math.abs(event.deltaY) * unit;
+        const paused = event.timeStamp - lastTime > 150;
+        const fresh = paused || (size >= 8 && size > level * 2.5);
+        level = paused ? size : (level + size) / 2;
+        lastTime = event.timeStamp;
+        return fresh;
+      }
+
+      function glideTo(index, y, event) {
+        step = { index: index, y: Math.round(y), started: event.timeStamp };
+        window.scrollTo({ top: step.y, behavior: reduceMotion ? "auto" : "smooth" });
       }
 
       window.addEventListener(
         "wheel",
         function (event) {
           if (event.ctrlKey || Math.abs(event.deltaY) < Math.abs(event.deltaX)) return;
-          if (busy) {
-            event.preventDefault();
-            release();
-            return;
-          }
+          const fresh = isFresh(event);
           const down = event.deltaY > 0;
-          const y = window.scrollY;
           const s = spans();
+
+          if (step) {
+            const elapsed = event.timeStamp - step.started;
+            // if the page never arrives (the scroll bar was grabbed, say), stop waiting for it
+            const gliding = Math.abs(window.scrollY - step.y) > 2 && elapsed < 1500;
+            if (!fresh || (gliding && elapsed < 300)) {
+              // the same gesture still going, or its momentum
+              event.preventDefault();
+              return;
+            }
+            if (gliding) {
+              // a second swipe before the page has arrived: carry on from where it was headed
+              event.preventDefault();
+              const onward = step.index + (down ? 1 : -1);
+              if (onward >= 0 && onward < s.length) glideTo(onward, down ? s[onward].top : s[onward].end, event);
+              return;
+            }
+            step = null;
+          }
+
+          const y = window.scrollY;
           let i = 0;
           while (i + 1 < s.length && s[i + 1].top <= y + 2) i++;
           // inside a tall screen, scroll it as usual until its edge
@@ -465,12 +525,8 @@
           if (next < 0 || next >= s.length) return;
 
           event.preventDefault();
-          busy = true;
-          started = Date.now();
           // coming back up into a tall screen lands on its end, where the reader left it
-          target = Math.round(down ? s[next].top : s[next].end);
-          window.scrollTo({ top: target, behavior: reduceMotion ? "auto" : "smooth" });
-          release();
+          glideTo(next, down ? s[next].top : s[next].end, event);
         },
         { passive: false }
       );
